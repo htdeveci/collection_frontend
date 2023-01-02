@@ -18,9 +18,7 @@ export const useHttpClient = () => {
         headers = { "Content-Type": "application/json" };
         try {
           if (body.has("image")) headers = {};
-        } catch (err) {
-          console.log(err);
-        }
+        } catch (err) {}
       }
 
       if (includeToken)

@@ -20,9 +20,11 @@ const Profile = () => {
   const descriptionRef = useRef();
 
   const updateUserInfo = useCallback(async () => {
-    const responseData = await sendRequest(`/users/${userId}`);
-    setUserData(responseData);
-  }, []);
+    if (userId) {
+      const responseData = await sendRequest(`/users/${userId}`);
+      setUserData(responseData);
+    }
+  }, [userId]);
 
   useEffect(() => {
     /* const fetchUser = async () => {
