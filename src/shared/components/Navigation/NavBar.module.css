@@ -1,0 +1,41 @@
+.header {
+  background-color: #208049;
+  padding: 0px 1rem;
+  height: auto;
+}
+
+.header nav {
+  height: 100%;
+}
+
+.header ul {
+  height: 100%;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.header a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.777rem;
+}
+
+.header a:hover {
+  color: rgb(253, 152, 1);
+}
+.header a:active,
+.header a.active {
+  color: rgb(255, 172, 49);
+}
+
+.homeLink {
+  margin-right: auto;
+  /* align-self: flex-start; */
+}
+
+.homeLink a {
+  font-size: 3.157rem;
+}

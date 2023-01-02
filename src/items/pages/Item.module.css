@@ -1,0 +1,21 @@
+.itemArea {
+  display: flex;
+  padding: 20px 0;
+}
+
+.itemArea button {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  color: white;
+  font-size: 35px;
+  font-weight: bold;
+  margin: auto;
+  cursor: pointer;
+  background-color: rgba(133, 133, 133, 0.74);
+  border: none;
+}
+
+.image {
+  margin: auto;
+}

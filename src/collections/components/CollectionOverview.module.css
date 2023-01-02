@@ -1,0 +1,24 @@
+.collection {
+  /* width: auto; */
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+  text-align: center;
+  cursor: pointer;
+  color: black;
+}
+
+.collection p {
+  padding: 1rem;
+  font-weight: 600;
+}
+
+.link {
+  text-decoration: none;
+}
+
+/* .card:hover,
+.card:hover * {
+  background-color: #85aa7c;
+  color: white;
+} */
