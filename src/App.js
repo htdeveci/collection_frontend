@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -8,11 +9,13 @@ import Home from "./shared/pages/Home";
 import Item from "./items/pages/Item";
 import Profile from "./users/pages/Profile";
 import Authenticate from "./users/pages/Authenticate";
-import { useEffect } from "react";
 import { authAction } from "./shared/store/auth";
+
+let logoutTimer;
 
 function App() {
   const token = useSelector((state) => state.auth.token);
+  const tokenExpirationDate = useSelector((state) => state.auth.expiration);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -23,6 +26,19 @@ function App() {
       );
     }
   }, [dispatch]);
+
+  useEffect(() => {
+    if (token && tokenExpirationDate) {
+      const remainingTime =
+        new Date(tokenExpirationDate).getTime() - new Date().getTime();
+      logoutTimer = setTimeout(
+        () => dispatch(authAction.logout()),
+        remainingTime
+      );
+    } else {
+      clearTimeout(logoutTimer);
+    }
+  }, [token, dispatch, tokenExpirationDate]);
 
   let routes;
 
