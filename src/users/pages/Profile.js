@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 import classes from "./Profile.module.css";
 import CollectionOverview from "../../collections/components/CollectionOverview";
@@ -11,7 +11,8 @@ import Modal from "../../shared/components/UIElements/Modal";
 import Button from "../../shared/components/FormElements/Button";
 
 const Profile = () => {
-  const userId = useSelector((state) => state.auth.userId);
+  // const userId = useSelector((state) => state.auth.userId);
+  const userId = useParams().userId;
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [userData, setUserData] = useState(null);
   const [pickedCollectionImage, setPickedCollectionImage] = useState(null);
@@ -20,10 +21,8 @@ const Profile = () => {
   const descriptionRef = useRef();
 
   const updateUserInfo = useCallback(async () => {
-    if (userId) {
-      const responseData = await sendRequest(`/users/${userId}`);
-      setUserData(responseData);
-    }
+    const responseData = await sendRequest(`/users/${userId}`);
+    setUserData(responseData);
   }, [userId]);
 
   useEffect(() => {
@@ -120,6 +119,8 @@ const Profile = () => {
           </section>
         </>
       )}
+
+      {error && <p>User not found!</p>}
 
       {/* Add Collection Modal */}
       <Modal

@@ -7,6 +7,7 @@ import { authAction } from "../../store/auth";
 
 const NavBar = () => {
   const token = useSelector((state) => state.auth.token);
+  const userId = useSelector((state) => state.auth.userId);
   const dispatch = useDispatch();
 
   const logoutHandler = () => {
@@ -31,7 +32,7 @@ const NavBar = () => {
                 className={(navData) =>
                   navData.isActive ? classes.active : ""
                 }
-                to="/profile/asafgwe"
+                to={`/profile/${userId}`}
               >
                 Profile
               </NavLink>

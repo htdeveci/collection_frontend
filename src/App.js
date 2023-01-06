@@ -19,7 +19,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate replace to="/home" />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/profile/:username" element={<Profile />} />
+        <Route path="/profile/:userId" element={<Profile />} />
         <Route path="/collection/:collectionId" element={<Collection />} />
         <Route path="/item/:itemId" element={<Item />} />
         <Route path="*" element={<Navigate replace to="/home" />} />
@@ -31,7 +31,7 @@ function App() {
         <Route path="/" element={<Navigate replace to="/home" />} />
         <Route path="/home" element={<Home />} />
         <Route path="/authenticate" element={<Authenticate />} />
-        <Route path="/profile/:username" element={<Profile />} />
+        <Route path="/profile/:userId" element={<Profile />} />
         <Route path="/collection/:collectionId" element={<Collection />} />
         <Route path="/item/:itemId" element={<Item />} />
       </Routes>
