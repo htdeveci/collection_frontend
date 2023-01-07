@@ -3,8 +3,8 @@ import { IMAGE_BASE_URL } from "../../utils/global-constants";
 
 const Image = (props) => {
   const style = {
-    width: props.width + "px",
-    height: props.height + "px",
+    width: props.width,
+    height: props.height,
     borderRadius: props.borderRadius + "%",
   };
 

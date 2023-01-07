@@ -17,6 +17,13 @@
   text-decoration: none;
 }
 
+.actions {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  gap: 1rem;
+}
+
 /* .card:hover,
 .card:hover * {
   background-color: #85aa7c;

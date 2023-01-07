@@ -11,7 +11,7 @@ import { authAction } from "../../shared/store/auth";
 
 const Login = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
-  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const { error, sendRequest, clearError } = useHttpClient();
   const dispatch = useDispatch();
 
   const {

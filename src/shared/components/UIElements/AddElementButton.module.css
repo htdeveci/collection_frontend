@@ -4,5 +4,6 @@
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  height: 200px;
+  height: auto;
+  min-height: 267px;
 }

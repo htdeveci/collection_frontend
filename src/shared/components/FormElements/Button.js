@@ -1,6 +1,10 @@
 import classes from "./Button.module.css";
 
 const Button = (props) => {
+  let children = props.children;
+  if (typeof children === "string" || children instanceof String)
+    children = children.toUpperCase();
+
   return (
     <button
       className={`${classes.button} ${props.small && classes.buttonSmall} ${
@@ -10,7 +14,7 @@ const Button = (props) => {
       onClick={props.onClick}
       disabled={props.disabled}
     >
-      {props.children}
+      {children}
     </button>
   );
 };

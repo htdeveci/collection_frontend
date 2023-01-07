@@ -2,22 +2,29 @@ import { useEffect, useRef, useState } from "react";
 
 import classes from "./ImageUpload.module.css";
 import Button from "./Button";
+import { IMAGE_BASE_URL } from "../../utils/global-constants";
+import Image from "../UIElements/Image";
 
 const ImageUpload = (props) => {
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [initialImage, setInitialImage] = useState(null);
   const filePickerRef = useRef();
 
   useEffect(() => {
+    setInitialImage(props.initialImage);
+
     if (!file) {
       return;
     }
+
     const fileReader = new FileReader();
     fileReader.onload = () => {
       setPreviewUrl(fileReader.result);
+      setInitialImage(null);
     };
     fileReader.readAsDataURL(file);
-  }, [file]);
+  }, [props.initialImage, file]);
 
   const pickImageHandler = () => {
     filePickerRef.current.click();
@@ -43,7 +50,17 @@ const ImageUpload = (props) => {
         ref={filePickerRef}
         onChange={pickedHandler}
       />
-      {props.showPreview && (
+      {!!initialImage && (
+        <Image
+          className={classes.preview}
+          src={initialImage}
+          alt="CoverPicture"
+          width="13rem"
+          height="13rem"
+          borderRadius="0"
+        />
+      )}
+      {!initialImage && props.showPreview && (
         <div className={classes.preview}>
           {previewUrl && <img src={previewUrl} alt="Preview" />}
           {!previewUrl && <p>Please pick an image.</p>}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import classes from "./Profile.module.css";
@@ -7,30 +7,26 @@ import Image from "../../shared/components/UIElements/Image";
 import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import AddElementButton from "../../shared/components/UIElements/AddElementButton";
-import Modal from "../../shared/components/UIElements/Modal";
-import Button from "../../shared/components/FormElements/Button";
+import AddOrEditCollection from "../../collections/components/AddOrEditCollection";
 
 const Profile = () => {
-  // const userId = useSelector((state) => state.auth.userId);
   const userId = useParams().userId;
-  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const { error: getUserError, sendRequest: getUserSendRequest } =
+    useHttpClient();
+  const { sendRequest: changeProfilePictureSendRequest } = useHttpClient();
+  const { sendRequest: addCollectionSendRequest } = useHttpClient();
+  const { sendRequest: deleteCollectionSendRequest } = useHttpClient();
   const [userData, setUserData] = useState(null);
-  const [pickedCollectionImage, setPickedCollectionImage] = useState(null);
-  const [showNewCollectionModal, setShowNewCollectionModal] = useState(false);
-  const nameRef = useRef();
-  const descriptionRef = useRef();
+  const [showCollectionModal, setShowCollectionModal] = useState(false);
+  const [collectionModalMode, setCollectionModalMode] = useState("add");
+  const [selectedCollectionId, setSelectedCollectionId] = useState(null);
 
   const updateUserInfo = useCallback(async () => {
-    const responseData = await sendRequest(`/users/${userId}`);
+    const responseData = await getUserSendRequest(`/users/${userId}`);
     setUserData(responseData);
-  }, [userId]);
+  }, [userId, getUserSendRequest]);
 
   useEffect(() => {
-    /* const fetchUser = async () => {
-      const responseData = await sendRequest(`/users/${userId}`);
-      setUserData(responseData);
-    };
-    fetchUser(); */
     updateUserInfo();
   }, [updateUserInfo]);
 
@@ -38,7 +34,7 @@ const Profile = () => {
     try {
       const imageData = new FormData();
       imageData.append("image", pickedFile);
-      const responseData = await sendRequest(
+      const responseData = await changeProfilePictureSendRequest(
         `/users/changePicture/${userId}`,
         "PATCH",
         imageData
@@ -47,36 +43,45 @@ const Profile = () => {
     } catch (err) {}
   };
 
-  const addCollectionHandler = () => {
-    setShowNewCollectionModal(true);
+  const openCollectionModalHandler = (modalMode, collectionId = null) => {
+    setCollectionModalMode(modalMode);
+    setSelectedCollectionId(collectionId);
+    setShowCollectionModal(true);
   };
 
-  const closeAddCollectionFormHandler = () => {
-    setShowNewCollectionModal(false);
+  const closeCollectionModalHandler = () => {
+    setShowCollectionModal(false);
   };
 
-  const submitAddCollectionHandler = async (event) => {
-    const body = new FormData();
-    body.append("name", nameRef.current.value);
-    body.append("description", descriptionRef.current.value);
-    body.append("image", pickedCollectionImage);
+  const submitCollectionModalHandler = async (body) => {
+    const url =
+      collectionModalMode === "add"
+        ? "/collections"
+        : `/collections/${selectedCollectionId}`;
+
+    const method = collectionModalMode === "add" ? "POST" : "PATCH";
 
     try {
-      const responseData = await sendRequest(
-        "/collections",
-        "POST",
-        body,
-        true
-      );
-      setShowNewCollectionModal(false);
+      await addCollectionSendRequest(url, method, body, true);
+      setShowCollectionModal(false);
       updateUserInfo();
     } catch (err) {
       console.log(err);
     }
   };
 
-  const pickedCoverPictureHandler = (pickedFile) => {
-    setPickedCollectionImage(pickedFile);
+  const deleteCollectionHandler = async (collectionId) => {
+    try {
+      await deleteCollectionSendRequest(
+        `/collections/${collectionId}`,
+        "DELETE",
+        null,
+        true
+      );
+      updateUserInfo();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -104,7 +109,7 @@ const Profile = () => {
           <section className={classes.collectionOverviewSection}>
             <AddElementButton
               buttonName="Add Collection"
-              onClick={addCollectionHandler}
+              onClick={openCollectionModalHandler.bind(null, "add", null)}
             />
             {userData.collectionList.map((collection) => {
               return (
@@ -113,6 +118,13 @@ const Profile = () => {
                   collectionId={collection.id}
                   collectionName={collection.name}
                   coverPicture={collection.coverPicture}
+                  editHandler={openCollectionModalHandler.bind(
+                    null,
+                    "edit",
+                    collection.id
+                  )}
+                  deleteHandler={deleteCollectionHandler}
+                  showActions
                 />
               );
             })}
@@ -120,33 +132,15 @@ const Profile = () => {
         </>
       )}
 
-      {error && <p>User not found!</p>}
+      {getUserError && <p>User not found!</p>}
 
-      {/* Add Collection Modal */}
-      <Modal
-        show={!!showNewCollectionModal}
-        onCancel={closeAddCollectionFormHandler}
-        header="Add Collection"
-        footer={
-          <div style={{ display: "flex", justifyContent: "left", gap: "1rem" }}>
-            <Button onClick={submitAddCollectionHandler}>Add Collection</Button>
-            <Button inverse onClick={closeAddCollectionFormHandler}>
-              Close
-            </Button>
-          </div>
-        }
-      >
-        <div>
-          <input type="text" ref={nameRef} placeholder="Collection Name" />
-          <input type="text" ref={descriptionRef} placeholder="Description" />
-          <ImageUpload
-            id=""
-            buttonTitle="Select Cover Picture"
-            onPicked={pickedCoverPictureHandler}
-            showPreview
-          />
-        </div>
-      </Modal>
+      <AddOrEditCollection
+        showModal={showCollectionModal}
+        closeModalHandler={closeCollectionModalHandler}
+        mode={collectionModalMode}
+        submitHandler={submitCollectionModalHandler}
+        collectionId={selectedCollectionId}
+      />
     </>
   );
 };
