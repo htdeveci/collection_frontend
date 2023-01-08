@@ -61,6 +61,7 @@ const Profile = () => {
 
     const method = collectionModalMode === "add" ? "POST" : "PATCH";
 
+    console.log(body);
     try {
       await addCollectionSendRequest(url, method, body, true);
       setShowCollectionModal(false);

@@ -22,8 +22,6 @@ const AddOrEditCollection = (props) => {
   const { sendRequest } = useHttpClient();
 
   const [pickedCollectionImage, setPickedCollectionImage] = useState(null);
-  const [collectionName, setCollectionName] = useState("");
-  const [collectionDescription, setCollectionDescription] = useState("");
   const [collectionImage, setCollectionImage] = useState(null);
 
   useEffect(() => {
@@ -32,8 +30,19 @@ const AddOrEditCollection = (props) => {
         const responseData = await sendRequest(
           `/collections/${props.collectionId}`
         );
-        setCollectionName(responseData.name);
-        setCollectionDescription(responseData.description);
+        setFormData({
+          inputData: {
+            collectionName: {
+              value: responseData.name,
+              isValid: true,
+            },
+            description: {
+              value: responseData.description,
+              isValid: true,
+            },
+          },
+          formValidity: true,
+        });
         setCollectionImage(responseData.coverPicture);
       } catch (err) {
         console.log(err);
@@ -43,20 +52,26 @@ const AddOrEditCollection = (props) => {
     if (!!props.showModal && props.mode === "edit") {
       fetchCollection();
     }
-  }, [props.showModal, props.mode, sendRequest]);
+  }, [
+    props.showModal,
+    props.mode,
+    sendRequest,
+    props.collectionId,
+    setFormData,
+  ]);
 
   const submitHandler = (event) => {
     event.target.disabled = true;
     let body;
     if (pickedCollectionImage) {
       body = new FormData();
-      body.append("name", collectionName);
-      body.append("description", collectionDescription);
+      body.append("name", formState.inputs.collectionName.value);
+      body.append("description", formState.inputs.description.value);
       body.append("image", pickedCollectionImage);
     } else {
       body = JSON.stringify({
-        name: collectionName,
-        description: collectionDescription,
+        name: formState.inputs.collectionName.value,
+        description: formState.inputs.description.value,
       });
     }
     props.submitHandler(body);
@@ -64,17 +79,7 @@ const AddOrEditCollection = (props) => {
     resetStates();
   };
 
-  const nameChangeHandler = (event) => {
-    setCollectionName(event.target.value);
-  };
-
-  const descriptionChangeHandler = (event) => {
-    setCollectionDescription(event.target.value);
-  };
-
   const resetStates = () => {
-    setCollectionName("");
-    setCollectionDescription("");
     setCollectionImage(null);
     setPickedCollectionImage(null);
   };
@@ -82,11 +87,6 @@ const AddOrEditCollection = (props) => {
   const cancelHandler = () => {
     props.closeModalHandler();
     resetStates();
-  };
-
-  const onSubmitHandler = (value, isValid) => {
-    console.log(value);
-    console.log(isValid);
   };
 
   return (
@@ -112,6 +112,14 @@ const AddOrEditCollection = (props) => {
           placeholder="Collection Name"
           validators={[VALIDATOR_REQUIRE()]}
           onInput={inputHandler}
+          initialValue={
+            formState.inputs.collectionName &&
+            formState.inputs.collectionName.value
+          }
+          initialValid={
+            formState.inputs.collectionName &&
+            formState.inputs.collectionName.isValid
+          }
         />
         <Input
           id="description"
@@ -119,6 +127,12 @@ const AddOrEditCollection = (props) => {
           placeholder="Description"
           validators={[VALIDATOR_REQUIRE()]}
           onInput={inputHandler}
+          initialValue={
+            formState.inputs.description && formState.inputs.description.value
+          }
+          initialValid={
+            formState.inputs.description && formState.inputs.description.isValid
+          }
         />
 
         <ImageUpload

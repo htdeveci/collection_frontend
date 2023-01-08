@@ -3,91 +3,54 @@ import { useDispatch } from "react-redux";
 
 import classes from "./Authenticate.module.css";
 import Card from "../../shared/components/UIElements/Card";
-import useInput from "../../shared/hooks/input-hook";
 import Modal from "../../shared/components/UIElements/Modal";
 import Button from "../../shared/components/FormElements/Button";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { authAction } from "../../shared/store/auth";
+import { useForm } from "../../shared/hooks/form-hook";
+import {
+  VALIDATOR_EMAIL,
+  VALIDATOR_MINLENGTH,
+  VALIDATOR_REQUIRE,
+} from "../../shared/utils/validators";
+import Input from "../../shared/components/FormElements/Input";
 
 const Login = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const { error, sendRequest, clearError } = useHttpClient();
   const dispatch = useDispatch();
-
-  const {
-    value: username,
-    isValid: usernameIsValid,
-    hasError: usernameHasError,
-    valueChangeHandler: usernameChangeHandler,
-    inputBlurHandler: usernameBlurHandler,
-    reset: usernameReset,
-    setIsTouched: usernameSetIsTouched,
-  } = useInput((value) => value.trim() !== "");
-
-  const {
-    value: email,
-    isValid: emailIsValid,
-    hasError: emailHasError,
-    valueChangeHandler: emailChangeHandler,
-    inputBlurHandler: emailBlurHandler,
-    reset: emailReset,
-    setIsTouched: emailSetIsTouched,
-  } = useInput((value) => value.includes("@"));
-
-  const {
-    value: password,
-    isValid: passwordIsValid,
-    hasError: passwordHasError,
-    valueChangeHandler: passwordChangeHandler,
-    inputBlurHandler: passwordBlurHandler,
-    reset: passwordReset,
-    setIsTouched: passwordSetIsTouched,
-  } = useInput((value) => value.trim().length >= 6);
-
-  const {
-    value: confirmPassword,
-    isValid: confirmPasswordIsValid,
-    hasError: confirmPasswordHasError,
-    valueChangeHandler: confirmPasswordChangeHandler,
-    inputBlurHandler: confirmPasswordBlurHandler,
-    reset: confirmPasswordReset,
-    setIsTouched: confirmPasswordSetIsTouched,
-  } = useInput((value) => value === password);
+  const [formState, inputHandler, setFormData] = useForm({
+    email: {
+      value: "",
+      isValid: false,
+    },
+    password: {
+      value: "",
+      isValid: false,
+    },
+  });
 
   const formSubmitHandler = async (event) => {
     event.preventDefault();
 
-    usernameSetIsTouched(true);
-    emailSetIsTouched(true);
-    passwordSetIsTouched(true);
-    confirmPasswordSetIsTouched(true);
-
-    if (emailIsValid && passwordIsValid) {
+    if (formState.isValid) {
+      const inputs = formState.inputs;
       let url = "/users/login";
       let body = JSON.stringify({
-        email,
-        password,
+        email: inputs.email.value,
+        password: inputs.password.value,
       });
-
       if (!isLoginMode) {
-        if (usernameIsValid && confirmPasswordIsValid) {
-          url = "/users/register";
-          body = JSON.stringify({
-            username,
-            email,
-            password,
-          });
-        } else return;
+        url = "/users/register";
+        body = JSON.stringify({
+          username: inputs.username.value,
+          email: inputs.email.value,
+          password: inputs.password.value,
+        });
       }
 
       try {
         const responseData = await sendRequest(url, "POST", body);
-
-        usernameReset();
-        emailReset();
-        passwordReset();
-        confirmPasswordReset();
-
         dispatch(
           authAction.login({
             token: responseData.token,
@@ -101,6 +64,26 @@ const Login = () => {
   };
 
   const switchModeHandler = () => {
+    if (isLoginMode) {
+      setFormData(
+        {
+          ...formState.inputs,
+          username: {
+            value: "",
+            isValid: false,
+          },
+        },
+        false
+      );
+    } else {
+      setFormData(
+        {
+          ...formState.inputs,
+          name: undefined,
+        },
+        formState.inputs.email.isValid && formState.inputs.password.isValid
+      );
+    }
     setIsLoginMode((prevState) => !prevState);
   };
 
@@ -119,57 +102,33 @@ const Login = () => {
           <form onSubmit={formSubmitHandler}>
             {isLoginMode ? <h2>Login</h2> : <h2>Register</h2>}
             {!isLoginMode && (
-              <div>
-                <input
-                  type={"text"}
-                  placeholder="Username"
-                  value={username}
-                  onChange={usernameChangeHandler}
-                  onBlur={usernameBlurHandler}
-                />
-                {usernameHasError && <p>Username can not be empty.</p>}
-              </div>
+              <Input
+                id="username"
+                type="text"
+                placeholder="Username"
+                validators={[VALIDATOR_REQUIRE()]}
+                onInput={inputHandler}
+              />
             )}
 
-            <div>
-              <input
-                type={"email"}
-                placeholder={"E-mail"}
-                value={email}
-                onChange={emailChangeHandler}
-                onBlur={emailBlurHandler}
-              />
-              {emailHasError && <p>Must be a valid e-mail.</p>}
-            </div>
+            <Input
+              id="email"
+              type="email"
+              placeholder="email"
+              validators={[VALIDATOR_EMAIL()]}
+              onInput={inputHandler}
+            />
+
+            <Input
+              id="password"
+              type="password"
+              placeholder="Password"
+              validators={[VALIDATOR_MINLENGTH(6)]}
+              onInput={inputHandler}
+            />
 
             <div>
-              <input
-                type={"password"}
-                placeholder="Password"
-                value={password}
-                onChange={passwordChangeHandler}
-                onBlur={passwordBlurHandler}
-              />
-              {passwordHasError && (
-                <p>Password must contain at least six characters.</p>
-              )}
-            </div>
-
-            {!isLoginMode && (
-              <div>
-                <input
-                  type={"password"}
-                  placeholder="Confirm Password"
-                  value={confirmPassword}
-                  onChange={confirmPasswordChangeHandler}
-                  onBlur={confirmPasswordBlurHandler}
-                />
-                {confirmPasswordHasError && <p>Passwords must be same.</p>}
-              </div>
-            )}
-
-            <div>
-              <Button type="submit">
+              <Button type="submit" disabled={!formState.isValid}>
                 {isLoginMode ? "LOGIN" : "REGISTER"}
               </Button>
             </div>
