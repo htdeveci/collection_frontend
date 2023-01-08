@@ -2,10 +2,23 @@ import { useEffect, useState } from "react";
 
 import Button from "../../shared/components/FormElements/Button";
 import ImageUpload from "../../shared/components/FormElements/ImageUpload";
+import Input from "../../shared/components/FormElements/Input";
 import Modal from "../../shared/components/UIElements/Modal";
+import { useForm } from "../../shared/hooks/form-hook";
 import { useHttpClient } from "../../shared/hooks/http-hook";
+import { VALIDATOR_REQUIRE } from "../../shared/utils/validators";
 
 const AddOrEditCollection = (props) => {
+  const [formState, inputHandler, setFormData] = useForm({
+    collectionName: {
+      value: "",
+      isValid: false,
+    },
+    description: {
+      value: "",
+      isValid: false,
+    },
+  });
   const { sendRequest } = useHttpClient();
 
   const [pickedCollectionImage, setPickedCollectionImage] = useState(null);
@@ -71,6 +84,11 @@ const AddOrEditCollection = (props) => {
     resetStates();
   };
 
+  const onSubmitHandler = (value, isValid) => {
+    console.log(value);
+    console.log(isValid);
+  };
+
   return (
     <Modal
       show={!!props.showModal}
@@ -78,7 +96,7 @@ const AddOrEditCollection = (props) => {
       header={props.mode === "edit" ? "Edit Collection" : "Add Collection"}
       footer={
         <div style={{ display: "flex", justifyContent: "left", gap: "1rem" }}>
-          <Button onClick={submitHandler}>
+          <Button onClick={submitHandler} disabled={!formState.isValid}>
             {props.mode === "edit" ? "Update Collection" : "Add Collection"}
           </Button>
           <Button inverse onClick={cancelHandler}>
@@ -88,26 +106,30 @@ const AddOrEditCollection = (props) => {
       }
     >
       <div>
-        <input
+        <Input
+          id="collectionName"
           type="text"
           placeholder="Collection Name"
-          value={collectionName}
-          onChange={nameChangeHandler}
+          validators={[VALIDATOR_REQUIRE()]}
+          onInput={inputHandler}
         />
-        <input
+        <Input
+          id="description"
           type="text"
           placeholder="Description"
-          value={collectionDescription}
-          onChange={descriptionChangeHandler}
+          validators={[VALIDATOR_REQUIRE()]}
+          onInput={inputHandler}
         />
+
         <ImageUpload
-          id=""
+          id="coverPicture"
           buttonTitle="Select Cover Picture"
           onPicked={(pickedFile) => {
             setPickedCollectionImage(pickedFile);
           }}
           showPreview
           initialImage={collectionImage}
+          onInput={inputHandler}
         />
       </div>
     </Modal>

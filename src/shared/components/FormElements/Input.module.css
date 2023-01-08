@@ -1,0 +1,6 @@
+.input {
+  background-color: rgb(192, 233, 44);
+}
+.hasError {
+  background-color: rgba(255, 0, 0, 0.397);
+}

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 
 import classes from "./Authenticate.module.css";
 import Card from "../../shared/components/UIElements/Card";
-import useInput from "../../shared/hooks/use-input";
+import useInput from "../../shared/hooks/input-hook";
 import Modal from "../../shared/components/UIElements/Modal";
 import Button from "../../shared/components/FormElements/Button";
 import { useHttpClient } from "../../shared/hooks/http-hook";

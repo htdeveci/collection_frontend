@@ -9,10 +9,20 @@ const ImageUpload = (props) => {
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [initialImage, setInitialImage] = useState(null);
+  const [isValid, setIsValid] = useState(false);
   const filePickerRef = useRef();
 
+  const { id, onInput, initialImageProp } = props;
+  /*
   useEffect(() => {
-    setInitialImage(props.initialImage);
+    onInput(id, file, isValid);
+  }, [id, file, isValid, onInput]);
+*/
+  useEffect(() => {
+    if (initialImageProp) {
+      setIsValid(true);
+      setInitialImage(initialImageProp);
+    }
 
     if (!file) {
       return;
