@@ -8,19 +8,23 @@ import { useForm } from "../../shared/hooks/form-hook";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { VALIDATOR_REQUIRE } from "../../shared/utils/validators";
 
-const AddOrEditCollection = (props) => {
-  const [formState, inputHandler, setFormData] = useForm({
-    collectionName: {
-      value: "",
-      isValid: false,
+const CollectionModal = (props) => {
+  const [formState, inputHandler, setFormData] = useForm(
+    {
+      collectionName: {
+        value: "",
+        isValid: false,
+      },
+      description: {
+        value: "",
+        isValid: false,
+      },
     },
-    description: {
-      value: "",
-      isValid: false,
-    },
-  });
+    false
+  );
   const { sendRequest } = useHttpClient();
 
+  const [loadedCollection, setLoadedCollection] = useState(null);
   const [pickedCollectionImage, setPickedCollectionImage] = useState(null);
   const [collectionImage, setCollectionImage] = useState(null);
 
@@ -30,8 +34,8 @@ const AddOrEditCollection = (props) => {
         const responseData = await sendRequest(
           `/collections/${props.collectionId}`
         );
-        setFormData({
-          inputData: {
+        const loadedCollection = {
+          inputs: {
             collectionName: {
               value: responseData.name,
               isValid: true,
@@ -42,8 +46,10 @@ const AddOrEditCollection = (props) => {
             },
           },
           formValidity: true,
-        });
+        };
         setCollectionImage(responseData.coverPicture);
+        setFormData(loadedCollection.inputs, loadedCollection.formValidity);
+        setLoadedCollection(loadedCollection);
       } catch (err) {
         console.log(err);
       }
@@ -82,6 +88,7 @@ const AddOrEditCollection = (props) => {
   const resetStates = () => {
     setCollectionImage(null);
     setPickedCollectionImage(null);
+    setLoadedCollection(false);
   };
 
   const cancelHandler = () => {
@@ -105,49 +112,56 @@ const AddOrEditCollection = (props) => {
         </div>
       }
     >
-      <div>
-        <Input
-          id="collectionName"
-          type="text"
-          placeholder="Collection Name"
-          validators={[VALIDATOR_REQUIRE()]}
-          onInput={inputHandler}
-          initialValue={
-            formState.inputs.collectionName &&
-            formState.inputs.collectionName.value
-          }
-          initialValid={
-            formState.inputs.collectionName &&
-            formState.inputs.collectionName.isValid
-          }
-        />
-        <Input
-          id="description"
-          type="text"
-          placeholder="Description"
-          validators={[VALIDATOR_REQUIRE()]}
-          onInput={inputHandler}
-          initialValue={
-            formState.inputs.description && formState.inputs.description.value
-          }
-          initialValid={
-            formState.inputs.description && formState.inputs.description.isValid
-          }
-        />
+      {((loadedCollection && props.mode === "edit") ||
+        props.mode === "add") && (
+        <div>
+          <Input
+            id="collectionName"
+            type="text"
+            placeholder="Collection Name"
+            validators={[VALIDATOR_REQUIRE()]}
+            onInput={inputHandler}
+            initialValue={
+              loadedCollection
+                ? loadedCollection.inputs.collectionName.value
+                : ""
+            }
+            initialValid={
+              loadedCollection
+                ? loadedCollection.inputs.collectionName.isValid
+                : ""
+            }
+          />
+          <Input
+            id="description"
+            type="text"
+            placeholder="Description"
+            validators={[VALIDATOR_REQUIRE()]}
+            onInput={inputHandler}
+            initialValue={
+              loadedCollection ? loadedCollection.inputs.description.value : ""
+            }
+            initialValid={
+              loadedCollection
+                ? loadedCollection.inputs.description.isValid
+                : ""
+            }
+          />
 
-        <ImageUpload
-          id="coverPicture"
-          buttonTitle="Select Cover Picture"
-          onPicked={(pickedFile) => {
-            setPickedCollectionImage(pickedFile);
-          }}
-          showPreview
-          initialImage={collectionImage}
-          onInput={inputHandler}
-        />
-      </div>
+          <ImageUpload
+            id="coverPicture"
+            buttonTitle="Select Cover Picture"
+            onPicked={(pickedFile) => {
+              setPickedCollectionImage(pickedFile);
+            }}
+            showPreview
+            initialImage={collectionImage}
+            onInput={inputHandler}
+          />
+        </div>
+      )}
     </Modal>
   );
 };
 
-export default AddOrEditCollection;
+export default CollectionModal;

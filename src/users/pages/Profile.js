@@ -7,7 +7,7 @@ import Image from "../../shared/components/UIElements/Image";
 import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import AddElementButton from "../../shared/components/UIElements/AddElementButton";
-import AddOrEditCollection from "../../collections/components/AddOrEditCollection";
+import CollectionModal from "../../collections/components/CollectionModal";
 
 const Profile = () => {
   const userId = useParams().userId;
@@ -135,7 +135,7 @@ const Profile = () => {
 
       {getUserError && <p>User not found!</p>}
 
-      <AddOrEditCollection
+      <CollectionModal
         showModal={showCollectionModal}
         closeModalHandler={closeCollectionModalHandler}
         mode={collectionModalMode}

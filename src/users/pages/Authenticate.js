@@ -19,16 +19,19 @@ const Login = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const { error, sendRequest, clearError } = useHttpClient();
   const dispatch = useDispatch();
-  const [formState, inputHandler, setFormData] = useForm({
-    email: {
-      value: "",
-      isValid: false,
+  const [formState, inputHandler, setFormData] = useForm(
+    {
+      email: {
+        value: "",
+        isValid: false,
+      },
+      password: {
+        value: "",
+        isValid: false,
+      },
     },
-    password: {
-      value: "",
-      isValid: false,
-    },
-  });
+    false
+  );
 
   const formSubmitHandler = async (event) => {
     event.preventDefault();
