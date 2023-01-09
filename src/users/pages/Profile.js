@@ -18,8 +18,7 @@ const Profile = () => {
   const { sendRequest: deleteCollectionSendRequest } = useHttpClient();
   const [userData, setUserData] = useState(null);
   const [showCollectionModal, setShowCollectionModal] = useState(false);
-  const [collectionModalMode, setCollectionModalMode] = useState("add");
-  const [selectedCollectionId, setSelectedCollectionId] = useState(null);
+  const [selectedCollection, setSelectedCollection] = useState(false);
 
   const updateUserInfo = useCallback(async () => {
     const responseData = await getUserSendRequest(`/users/${userId}`);
@@ -43,28 +42,27 @@ const Profile = () => {
     } catch (err) {}
   };
 
-  const openCollectionModalHandler = (modalMode, collectionId = null) => {
-    setCollectionModalMode(modalMode);
-    setSelectedCollectionId(collectionId);
+  const openCollectionModalHandler = (collection = null) => {
+    setSelectedCollection(collection);
     setShowCollectionModal(true);
   };
 
   const closeCollectionModalHandler = () => {
+    setSelectedCollection(null);
     setShowCollectionModal(false);
   };
 
   const submitCollectionModalHandler = async (body) => {
-    const url =
-      collectionModalMode === "add"
-        ? "/collections"
-        : `/collections/${selectedCollectionId}`;
+    const url = selectedCollection
+      ? `/collections/${selectedCollection.id}`
+      : "/collections";
 
-    const method = collectionModalMode === "add" ? "POST" : "PATCH";
+    const method = selectedCollection ? "PATCH" : "POST";
 
-    console.log(body);
     try {
       await addCollectionSendRequest(url, method, body, true);
       setShowCollectionModal(false);
+      setSelectedCollection(null);
       updateUserInfo();
     } catch (err) {
       console.log(err);
@@ -110,7 +108,7 @@ const Profile = () => {
           <section className={classes.collectionOverviewSection}>
             <AddElementButton
               buttonName="Add Collection"
-              onClick={openCollectionModalHandler.bind(null, "add", null)}
+              onClick={openCollectionModalHandler.bind(null, null)}
             />
             {userData.collectionList.map((collection) => {
               return (
@@ -121,8 +119,7 @@ const Profile = () => {
                   coverPicture={collection.coverPicture}
                   editHandler={openCollectionModalHandler.bind(
                     null,
-                    "edit",
-                    collection.id
+                    collection
                   )}
                   deleteHandler={deleteCollectionHandler}
                   showActions
@@ -138,9 +135,8 @@ const Profile = () => {
       <CollectionModal
         showModal={showCollectionModal}
         closeModalHandler={closeCollectionModalHandler}
-        mode={collectionModalMode}
         submitHandler={submitCollectionModalHandler}
-        collectionId={selectedCollectionId}
+        collection={selectedCollection}
       />
     </>
   );

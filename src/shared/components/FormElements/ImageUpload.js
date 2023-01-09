@@ -2,28 +2,28 @@ import { useEffect, useRef, useState } from "react";
 
 import classes from "./ImageUpload.module.css";
 import Button from "./Button";
-import { IMAGE_BASE_URL } from "../../utils/global-constants";
 import Image from "../UIElements/Image";
 
 const ImageUpload = (props) => {
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [initialImage, setInitialImage] = useState(null);
-  const [isValid, setIsValid] = useState(false);
   const filePickerRef = useRef();
 
-  const { id, onInput, initialImageProp } = props;
-  /*
-  useEffect(() => {
-    onInput(id, file, isValid);
-  }, [id, file, isValid, onInput]);
-*/
-  useEffect(() => {
-    if (initialImageProp) {
-      setIsValid(true);
-      setInitialImage(initialImageProp);
-    }
+  const { id, initialValue, onInput, onPicked } = props;
 
+  useEffect(() => {
+    if (initialValue) {
+      setInitialImage(initialValue);
+      onInput(id, initialValue, true);
+    } else {
+      if (onInput) {
+        onInput(id, "", false);
+      }
+    }
+  }, [id, initialValue, onInput]);
+
+  useEffect(() => {
     if (!file) {
       return;
     }
@@ -31,10 +31,9 @@ const ImageUpload = (props) => {
     const fileReader = new FileReader();
     fileReader.onload = () => {
       setPreviewUrl(fileReader.result);
-      setInitialImage(null);
     };
     fileReader.readAsDataURL(file);
-  }, [props.initialImage, file]);
+  }, [file]);
 
   const pickImageHandler = () => {
     filePickerRef.current.click();
@@ -45,7 +44,9 @@ const ImageUpload = (props) => {
       const pickedFile = event.target.files[0];
       if (pickedFile.type.includes("image")) {
         setFile(pickedFile);
-        props.onPicked(pickedFile);
+        onPicked(pickedFile);
+        setInitialImage(null);
+        if (onInput) onInput(id, pickedFile, true);
       }
     }
   };
@@ -53,7 +54,7 @@ const ImageUpload = (props) => {
   return (
     <>
       <input
-        id={props.id}
+        id={id}
         style={{ display: "none" }}
         type="file"
         accept="image/*"
