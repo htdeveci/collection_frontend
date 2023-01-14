@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import classes from "./Home.module.css";
 import { useHttpClient } from "../hooks/http-hook";
-import CollectionOverview from "../../collections/components/CollectionOverview";
+import ElementOverview from "../components/elements/ElementOverview";
 
 const Home = () => {
   const [loadedCollections, setLoadedCollections] = useState();
@@ -26,9 +26,10 @@ const Home = () => {
       {loadedCollections &&
         loadedCollections.map((collection) => {
           return (
-            <CollectionOverview
+            <ElementOverview
               key={collection.id}
-              collectionId={collection.id}
+              id={collection.id}
+              type="collection"
               collectionName={collection.name}
               coverPicture={collection.coverPicture}
             />

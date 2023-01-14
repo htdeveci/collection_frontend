@@ -1,14 +1,19 @@
 import { Link } from "react-router-dom";
 
-import classes from "./CollectionOverview.module.css";
-import Card from "../../shared/components/UIElements/Card";
-import Image from "../../shared/components/UIElements/Image";
-import Button from "../../shared/components/FormElements/Button";
+import classes from "./ElementOverview.module.css";
+import Card from "../UIElements/Card";
+import Image from "../UIElements/Image";
+import Button from "../FormElements/Button";
 
-const CollectionOverview = (props) => {
+const ElementOverview = (props) => {
   return (
     <Card>
-      <Link className={classes.link} to={`/collection/${props.collectionId}`}>
+      <Link
+        className={classes.link}
+        to={`${props.type === "collection" ? "/collection/" : "/item/"}${
+          props.id
+        }`}
+      >
         <div className={classes.collection}>
           <Image
             src={props.coverPicture}
@@ -41,4 +46,4 @@ const CollectionOverview = (props) => {
   );
 };
 
-export default CollectionOverview;
+export default ElementOverview;

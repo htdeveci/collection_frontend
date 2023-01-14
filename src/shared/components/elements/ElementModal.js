@@ -1,15 +1,23 @@
 import { useState } from "react";
 
-import Button from "../../shared/components/FormElements/Button";
-import ImageUpload from "../../shared/components/FormElements/ImageUpload";
-import Input from "../../shared/components/FormElements/Input";
-import Modal from "../../shared/components/UIElements/Modal";
-import { useForm } from "../../shared/hooks/form-hook";
-import { VALIDATOR_REQUIRE } from "../../shared/utils/validators";
+import Button from "../FormElements/Button";
+import ImageUpload from "../FormElements/ImageUpload";
+import Input from "../FormElements/Input";
+import Modal from "../UIElements/Modal";
+import { useForm } from "../../hooks/form-hook";
+import { VALIDATOR_REQUIRE } from "../../utils/validators";
 
-const CollectionModal = (props) => {
+const ElementModal = (props) => {
   const [pickedCollectionImage, setPickedCollectionImage] = useState(null);
-  // const [selectedCollection, setSelectedCollection] = useState(null);
+
+  const {
+    type,
+    showModal,
+    closeModalHandler,
+    initialElement,
+    submitHandlerProp,
+  } = props;
+
   const [formState, inputHandler] = useForm(
     {
       collectionName: {
@@ -28,10 +36,7 @@ const CollectionModal = (props) => {
     false
   );
 
-  /* if (props.collection) {
-    formState.inputs.coverPicture.isValid = true;
-  } */
-  const selectedCollection = props.collection;
+  const selectedCollection = initialElement;
 
   const submitHandler = (event) => {
     event.target.disabled = true;
@@ -47,7 +52,7 @@ const CollectionModal = (props) => {
         description: formState.inputs.description.value,
       });
     }
-    props.submitHandler(body);
+    submitHandlerProp(body);
     event.target.disabled = false;
     resetStates();
   };
@@ -59,19 +64,28 @@ const CollectionModal = (props) => {
   };
 
   const cancelHandler = () => {
-    props.closeModalHandler();
+    closeModalHandler();
     resetStates();
+  };
+
+  const getCapitalized = (value) => {
+    return value.charAt(0).toUpperCase() + value.slice(1);
+  };
+
+  const getHeader = () => {
+    if (initialElement) return `Edit ${getCapitalized(type)}`;
+    else return `Add ${getCapitalized(type)}`;
   };
 
   return (
     <Modal
-      show={!!props.showModal}
+      show={!!showModal}
       onCancel={cancelHandler}
-      header={props.collection ? "Edit Collection" : "Add Collection"}
+      header={getHeader()}
       footer={
         <div style={{ display: "flex", justifyContent: "left", gap: "1rem" }}>
           <Button onClick={submitHandler} disabled={!formState.isValid}>
-            {props.collection ? "Update Collection" : "Add Collection"}
+            {getHeader()}
           </Button>
           <Button inverse onClick={cancelHandler}>
             Close
@@ -81,9 +95,9 @@ const CollectionModal = (props) => {
     >
       <div>
         <Input
-          id="collectionName"
+          id="name"
           type="text"
-          placeholder="Collection Name"
+          placeholder={`${getCapitalized(type)} Name`}
           validators={[VALIDATOR_REQUIRE()]}
           onInput={inputHandler}
           initialValue={selectedCollection ? selectedCollection.name : ""}
@@ -116,4 +130,4 @@ const CollectionModal = (props) => {
   );
 };
 
-export default CollectionModal;
+export default ElementModal;

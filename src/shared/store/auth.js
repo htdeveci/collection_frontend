@@ -33,6 +33,7 @@ const getExpirationDate = () => {
   let tokenExpirationDate = new Date(new Date().getTime() + 1000 * 60 * 60);
   if (userData) {
     if (userData.expiration && new Date(userData.expiration) > new Date()) {
+      console.log("ok");
       tokenExpirationDate = new Date(userData.expiration);
     }
   }

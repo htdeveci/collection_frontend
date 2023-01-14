@@ -1,0 +1,22 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 1rem;
+}
+
+.username {
+  /* font-size: 40px; */
+  color: rgb(255, 145, 0);
+  /* font-style: italic; */
+  /* font-weight: 800; */
+}
+
+.collectionOverviewSection {
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  justify-content: center;
+  gap: 2rem;
+  /* height: 15rem; */
+}

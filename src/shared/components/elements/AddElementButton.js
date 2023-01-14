@@ -1,7 +1,7 @@
 import { IoAddCircleOutline } from "react-icons/io5";
 
 import classes from "./AddElementButton.module.css";
-import Card from "./Card";
+import Card from "../UIElements/Card";
 
 const AddElementButton = (props) => {
   return (
