@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import classes from "./Item.module.css";
 import Image from "../../shared/components/UIElements/Image";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 
-const Item = (props) => {
+const Item = () => {
   const itemId = useParams().itemId;
-  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const { sendRequest } = useHttpClient();
   const [loadedItem, setLoadedItem] = useState();
 
   useEffect(() => {
@@ -20,15 +19,28 @@ const Item = (props) => {
     };
 
     fetchItem();
-  }, [sendRequest]);
+  }, [sendRequest, itemId]);
 
   return (
     <>
-      <ImageUpload buttonTitle="ADD PHOTO" />
       {loadedItem && (
         <>
-          <h2>{loadedItem.name}</h2>
-          <p>{loadedItem.description}</p>
+          <Image
+            src={loadedItem.coverPicture}
+            alt={loadedItem.coverPicture.split("\\")[2]}
+            height={300}
+            className={classes.image}
+          />
+          <div className={classes.center}>
+            <h2>{loadedItem.name}</h2>
+            <p>{loadedItem.description}</p>
+            <p>
+              {"a piece of "}
+              <Link to={`/collection/${loadedItem.collectionId.id}`}>
+                {loadedItem.collectionId.name}
+              </Link>
+            </p>
+          </div>
         </>
       )}
     </>

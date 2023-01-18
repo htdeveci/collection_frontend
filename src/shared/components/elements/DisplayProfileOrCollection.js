@@ -8,6 +8,7 @@ import AddElementButton from "./AddElementButton";
 import Image from "../UIElements/Image";
 import { useHttpClient } from "../../hooks/http-hook";
 import ElementModal from "./ElementModal";
+import { Link } from "react-router-dom";
 
 const DisplayProfileOrCollection = (props) => {
   const loggedInUserId = useSelector((state) => state.auth.userId);
@@ -89,7 +90,7 @@ const DisplayProfileOrCollection = (props) => {
 
   const isUserAuthorized = () => {
     if (type === "profile") return id === loggedInUserId;
-    else return data.creator === loggedInUserId;
+    else return data.creator.id === loggedInUserId;
   };
 
   return (
@@ -115,9 +116,16 @@ const DisplayProfileOrCollection = (props) => {
 
             <div>
               <h1 className={classes.username}>
-                {" "}
                 {type === "profile" ? data.username : data.name}
               </h1>
+              {type === "collection" && (
+                <p>
+                  {"created by "}
+                  <Link to={`/profile/${data.creator.id}`}>
+                    {data.creator.username}
+                  </Link>
+                </p>
+              )}
               {isUserAuthorized() && (
                 <ImageUpload
                   buttonTitle={

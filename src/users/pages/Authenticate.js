@@ -118,7 +118,7 @@ const Login = () => {
             <Input
               id="email"
               type="email"
-              placeholder="email"
+              placeholder="E-mail"
               validators={[VALIDATOR_EMAIL()]}
               onInput={inputHandler}
             />

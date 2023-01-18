@@ -1,11 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-import classes from "./Collection.module.css";
-import Card from "../../shared/components/UIElements/Card";
-import Image from "../../shared/components/UIElements/Image";
+// import classes from "./Collection.module.css";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 import DisplayProfileOrCollection from "../../shared/components/elements/DisplayProfileOrCollection";
 
 const Collection = () => {
