@@ -12,8 +12,8 @@ import ElementModal from "./ElementModal";
 const DisplayProfileOrCollection = (props) => {
   const loggedInUserId = useSelector((state) => state.auth.userId);
   const { sendRequest: changePictureSendRequest } = useHttpClient();
-  const { sendRequest: deleteCollectionSendRequest } = useHttpClient();
-  const { sendRequest: addCollectionSendRequest } = useHttpClient();
+  const { sendRequest: deleteElementSendRequest } = useHttpClient();
+  const { sendRequest: addElementSendRequest } = useHttpClient();
   const [showModal, setShowModal] = useState(false);
   const [selectedElement, setSelectedElement] = useState(false);
 
@@ -52,14 +52,19 @@ const DisplayProfileOrCollection = (props) => {
   };
 
   const submitModalHandler = async (body) => {
-    const url = selectedElement
-      ? `/collections/${selectedElement.id}`
-      : "/collections";
+    let url;
+    if (type === "profile") {
+      url = selectedElement
+        ? `/collections/${selectedElement.id}`
+        : "/collections";
+    } else if (type === "collection") {
+      url = selectedElement ? `/items/${selectedElement.id}` : "/items";
+    }
 
     const method = selectedElement ? "PATCH" : "POST";
 
     try {
-      await addCollectionSendRequest(url, method, body, true);
+      await addElementSendRequest(url, method, body, true);
       setShowModal(false);
       setSelectedElement(null);
       updateData();
@@ -68,10 +73,10 @@ const DisplayProfileOrCollection = (props) => {
     }
   };
 
-  const deleteCollectionHandler = async (collectionId) => {
+  const deleteCollectionHandler = async (elementId) => {
     try {
-      await deleteCollectionSendRequest(
-        `/collections/${collectionId}`,
+      await deleteElementSendRequest(
+        `/${type === "profile" ? "collections" : "items"}/${elementId}`,
         "DELETE",
         null,
         true
@@ -143,7 +148,10 @@ const DisplayProfileOrCollection = (props) => {
                     collectionName={element.name}
                     coverPicture={element.coverPicture}
                     editHandler={openModalHandler.bind(null, element)}
-                    deleteHandler={deleteCollectionHandler}
+                    deleteHandler={deleteCollectionHandler.bind(
+                      null,
+                      element.id
+                    )}
                     showActions={isUserAuthorized()}
                   />
                 );
@@ -157,6 +165,7 @@ const DisplayProfileOrCollection = (props) => {
             closeModalHandler={closeModalHandler}
             submitHandler={submitModalHandler}
             initialElement={selectedElement}
+            collectionId={id}
           />
         </>
       )}

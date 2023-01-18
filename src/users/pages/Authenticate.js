@@ -58,6 +58,7 @@ const Login = () => {
           authAction.login({
             token: responseData.token,
             userId: responseData.userId,
+            expiration: null,
           })
         );
       } catch (err) {

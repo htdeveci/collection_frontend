@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { authAction } from "../store/auth";
+import { LOCAL_STORAGE_USER_DATA } from "../utils/global-constants";
 
 let logoutTimer;
 
@@ -11,22 +12,27 @@ const useAuth = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("userData"));
-    if (storedData && storedData.token) {
-      dispatch(
-        authAction.login({ token: storedData.token, userId: storedData.userId })
-      );
+    const storedData = JSON.parse(
+      localStorage.getItem(LOCAL_STORAGE_USER_DATA)
+    );
+    if (storedData) {
+      if (new Date(storedData.expiration) > new Date()) {
+        dispatch(
+          authAction.login({
+            token: storedData.token,
+            userId: storedData.userId,
+            expiration: storedData.expiration,
+          })
+        );
+      }
     }
-  }, [dispatch]);
 
-  useEffect(() => {
     if (token && tokenExpirationDate) {
       const remainingTime =
         new Date(tokenExpirationDate).getTime() - new Date().getTime();
-      logoutTimer = setTimeout(
-        () => dispatch(authAction.logout()),
-        remainingTime
-      );
+      logoutTimer = setTimeout(() => {
+        dispatch(authAction.logout());
+      }, remainingTime);
     } else {
       clearTimeout(logoutTimer);
     }

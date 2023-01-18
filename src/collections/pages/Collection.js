@@ -20,7 +20,7 @@ const Collection = () => {
 
   useEffect(() => {
     fetchCollection();
-  }, []);
+  }, [fetchCollection]);
 
   return (
     <DisplayProfileOrCollection

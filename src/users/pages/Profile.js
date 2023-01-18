@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import classes from "./Profile.module.css";
+// import classes from "./Profile.module.css";
 import DisplayProfileOrCollection from "../../shared/components/elements/DisplayProfileOrCollection";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 

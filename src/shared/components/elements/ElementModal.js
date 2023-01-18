@@ -8,19 +8,20 @@ import { useForm } from "../../hooks/form-hook";
 import { VALIDATOR_REQUIRE } from "../../utils/validators";
 
 const ElementModal = (props) => {
-  const [pickedCollectionImage, setPickedCollectionImage] = useState(null);
+  const [pickedImage, setPickedImage] = useState(null);
 
   const {
     type,
     showModal,
     closeModalHandler,
     initialElement,
-    submitHandlerProp,
+    submitHandler: submitHandlerProp,
+    collectionId,
   } = props;
 
   const [formState, inputHandler] = useForm(
     {
-      collectionName: {
+      name: {
         value: "",
         isValid: false,
       },
@@ -36,30 +37,48 @@ const ElementModal = (props) => {
     false
   );
 
-  const selectedCollection = initialElement;
+  const selectedElement = initialElement;
 
   const submitHandler = (event) => {
     event.target.disabled = true;
-    let body;
-    if (pickedCollectionImage) {
-      body = new FormData();
-      body.append("name", formState.inputs.collectionName.value);
-      body.append("description", formState.inputs.description.value);
-      body.append("image", pickedCollectionImage);
-    } else {
-      body = JSON.stringify({
-        name: formState.inputs.collectionName.value,
-        description: formState.inputs.description.value,
-      });
+    if (type === "collection") {
+      let body;
+      if (pickedImage) {
+        body = new FormData();
+        body.append("name", formState.inputs.name.value);
+        body.append("description", formState.inputs.description.value);
+        body.append("image", pickedImage);
+      } else {
+        body = JSON.stringify({
+          name: formState.inputs.name.value,
+          description: formState.inputs.description.value,
+        });
+      }
+      submitHandlerProp(body);
+    } else if (type === "item") {
+      let body;
+      if (pickedImage) {
+        body = new FormData();
+        body.append("name", formState.inputs.name.value);
+        body.append("description", formState.inputs.description.value);
+        body.append("collectionId", collectionId);
+        body.append("image", pickedImage);
+      } else {
+        body = JSON.stringify({
+          name: formState.inputs.name.value,
+          description: formState.inputs.description.value,
+          collectionId: collectionId,
+        });
+      }
+      submitHandlerProp(body);
     }
-    submitHandlerProp(body);
     event.target.disabled = false;
     resetStates();
   };
 
   const resetStates = () => {
     // setCollectionImage(null);
-    setPickedCollectionImage(null);
+    setPickedImage(null);
     // setLoadedCollection(false);
   };
 
@@ -100,7 +119,7 @@ const ElementModal = (props) => {
           placeholder={`${getCapitalized(type)} Name`}
           validators={[VALIDATOR_REQUIRE()]}
           onInput={inputHandler}
-          initialValue={selectedCollection ? selectedCollection.name : ""}
+          initialValue={selectedElement ? selectedElement.name : ""}
         />
         <Input
           id="description"
@@ -108,22 +127,18 @@ const ElementModal = (props) => {
           placeholder="Description"
           validators={[VALIDATOR_REQUIRE()]}
           onInput={inputHandler}
-          initialValue={
-            selectedCollection ? selectedCollection.description : ""
-          }
+          initialValue={selectedElement ? selectedElement.description : ""}
         />
 
         <ImageUpload
           id="coverPicture"
           buttonTitle="Select Cover Picture"
           onPicked={(pickedFile) => {
-            setPickedCollectionImage(pickedFile);
+            setPickedImage(pickedFile);
           }}
           showPreview
           onInput={inputHandler}
-          initialValue={
-            selectedCollection ? selectedCollection.coverPicture : null
-          }
+          initialValue={selectedElement ? selectedElement.coverPicture : null}
         />
       </div>
     </Modal>
