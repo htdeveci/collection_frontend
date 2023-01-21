@@ -9,11 +9,16 @@ const Image = (props) => {
   };
 
   return (
-    <div className={classes.imageFrame + " " + props.className} style={style}>
+    <div
+      className={classes.imageFrame + " " + props.className}
+      onClick={props.onClick}
+      style={style}
+    >
       <img
         className={classes.image}
         src={IMAGE_BASE_URL + props.src}
         alt={props.alt}
+        style={{ objectFit: props.objectFit }}
       />
     </div>
   );

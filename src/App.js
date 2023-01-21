@@ -5,6 +5,7 @@ import NavBar from "./shared/components/Navigation/NavBar";
 import Collection from "./collections/pages/Collection";
 import Home from "./shared/pages/Home";
 import Item from "./items/pages/Item";
+import Media from "./items/pages/Media";
 import Profile from "./users/pages/Profile";
 import Authenticate from "./users/pages/Authenticate";
 import useAuth from "./shared/hooks/auth-hook";
@@ -21,6 +22,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/profile/:userId" element={<Profile />} />
         <Route path="/collection/:collectionId" element={<Collection />} />
+        <Route path="/item/:itemId/media/:mediaName" element={<Media />} />
         <Route path="/item/:itemId" element={<Item />} />
         <Route path="*" element={<Navigate replace to="/home" />} />
       </Routes>
@@ -33,6 +35,7 @@ function App() {
         <Route path="/authenticate" element={<Authenticate />} />
         <Route path="/profile/:userId" element={<Profile />} />
         <Route path="/collection/:collectionId" element={<Collection />} />
+        <Route path="/item/:itemId/media/:mediaName" element={<Media />} />
         <Route path="/item/:itemId" element={<Item />} />
       </Routes>
     );

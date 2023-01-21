@@ -1,25 +1,26 @@
-.itemArea {
-  display: flex;
-  padding: 20px 0;
-}
-
-.itemArea button {
-  height: 50px;
-  width: 50px;
-  border-radius: 50%;
-  color: white;
-  font-size: 35px;
-  font-weight: bold;
-  margin: auto;
-  cursor: pointer;
-  background-color: rgba(133, 133, 133, 0.74);
-  border: none;
-}
-
 .image {
-  margin: auto;
+  margin: 0 1rem;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  max-height: 70vh;
 }
 
-.center {
+.infoArea {
   text-align: center;
+  margin: 2rem;
+}
+
+.mediaListContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.7rem 0.5rem;
+  justify-content: center;
+}
+
+.mediaCard {
+  cursor: pointer;
+  border-radius: 12px;
+  flex: 0 0 calc(33.3% - 1rem);
 }
