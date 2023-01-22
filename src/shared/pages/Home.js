@@ -6,7 +6,7 @@ import ElementOverview from "../components/elements/ElementOverview";
 
 const Home = () => {
   const [loadedCollections, setLoadedCollections] = useState();
-  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const { sendRequest } = useHttpClient();
 
   useEffect(() => {
     const fetchCollections = async () => {

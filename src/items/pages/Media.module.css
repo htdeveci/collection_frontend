@@ -1,16 +1,23 @@
-.image {
-  max-height: 90%;
-  max-width: 90%;
-}
-
-.container {
-  position: fixed;
-  left: 0;
-  top: 0;
+.outerContainer {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  width: 100%;
-  z-index: 10;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.innerContainer {
+  position: relative;
+  max-width: fit-content;
+  max-height: fit-content;
+  display: flex;
+  z-index: 15;
+}
+
+.image {
+  max-width: 90vw;
+  max-height: 90vh;
 }

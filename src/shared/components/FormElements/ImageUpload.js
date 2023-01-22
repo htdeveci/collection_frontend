@@ -4,20 +4,26 @@ import classes from "./ImageUpload.module.css";
 import Button from "./Button";
 import Image from "../UIElements/Image";
 
-const ImageUpload = (props) => {
+const ImageUpload = ({
+  id,
+  initialValue,
+  onInput,
+  onPicked,
+  showPreview,
+  buttonTitle,
+  small,
+}) => {
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [initialImage, setInitialImage] = useState(null);
   const filePickerRef = useRef();
 
-  const { id, initialValue, onInput, onPicked } = props;
-
   useEffect(() => {
-    if (initialValue) {
-      setInitialImage(initialValue);
-      onInput(id, initialValue, true);
-    } else {
-      if (onInput) {
+    if (onInput) {
+      if (initialValue) {
+        setInitialImage(initialValue);
+        onInput(id, initialValue, true);
+      } else {
         onInput(id, "", false);
       }
     }
@@ -71,14 +77,14 @@ const ImageUpload = (props) => {
           borderRadius="0"
         />
       )}
-      {!initialImage && props.showPreview && (
+      {!initialImage && showPreview && (
         <div className={classes.preview}>
           {previewUrl && <img src={previewUrl} alt="Preview" />}
           {!previewUrl && <p>Please pick an image.</p>}
         </div>
       )}
-      <Button type="button" onClick={pickImageHandler} small>
-        {props.buttonTitle}
+      <Button type="button" onClick={pickImageHandler} small={small}>
+        {buttonTitle}
       </Button>
     </>
   );

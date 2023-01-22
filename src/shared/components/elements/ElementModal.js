@@ -139,6 +139,7 @@ const ElementModal = (props) => {
           showPreview
           onInput={inputHandler}
           initialValue={selectedElement ? selectedElement.coverPicture : null}
+          small
         />
       </div>
     </Modal>

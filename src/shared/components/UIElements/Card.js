@@ -1,12 +1,14 @@
 import classes from "./Card.module.css";
 
-const Card = (props) => {
+const Card = ({ className, children, onClick, animate = true }) => {
   return (
     <div
-      className={classes.card + " " + props.className}
-      onClick={props.onClick}
+      className={`${classes.card} ${className} ${
+        animate && classes.cardAnimation
+      }`}
+      onClick={onClick}
     >
-      {props.children}
+      {children}
     </div>
   );
 };

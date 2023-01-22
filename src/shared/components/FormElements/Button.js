@@ -1,20 +1,33 @@
 import classes from "./Button.module.css";
 
-const Button = (props) => {
-  let children = props.children;
-  if (typeof children === "string" || children instanceof String)
-    children = children.toUpperCase();
+const Button = ({
+  children,
+  type = "button",
+  onClick,
+  disabled,
+  small,
+  big,
+  inverse,
+  width,
+}) => {
+  let childrenUpperCase = children;
+  if (
+    typeof childrenUpperCase === "string" ||
+    childrenUpperCase instanceof String
+  )
+    childrenUpperCase = childrenUpperCase.toUpperCase();
 
   return (
     <button
-      className={`${classes.button} ${props.small && classes.buttonSmall} ${
-        props.big && classes.buttonBig
-      } ${props.inverse && classes.buttonInverse}`}
-      type={props.type}
-      onClick={props.onClick}
-      disabled={props.disabled}
+      className={`${classes.button} ${small && classes.buttonSmall} ${
+        big && classes.buttonBig
+      } ${inverse && classes.buttonInverse}`}
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      style={{ width: width }}
     >
-      {children}
+      {childrenUpperCase}
     </button>
   );
 };

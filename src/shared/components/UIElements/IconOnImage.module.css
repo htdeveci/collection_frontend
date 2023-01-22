@@ -1,0 +1,16 @@
+.icon {
+  z-index: 20;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  cursor: pointer;
+}
+
+.iconAnimation {
+  opacity: 0.3;
+  transition: opacity 0.15s ease-in;
+}
+
+.iconAnimation:hover {
+  opacity: 1;
+}

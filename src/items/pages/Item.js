@@ -1,29 +1,64 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import classes from "./Item.module.css";
 import Image from "../../shared/components/UIElements/Image";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import Card from "../../shared/components/UIElements/Card";
 import ImageUpload from "../../shared/components/FormElements/ImageUpload";
+import Button from "../../shared/components/FormElements/Button";
+import { IoTrash } from "react-icons/io5";
+import IconOnImage from "../../shared/components/UIElements/IconOnImage";
 
 const Item = () => {
+  const loggedInUserId = useSelector((state) => state.auth.userId);
   const itemId = useParams().itemId;
-  const { sendRequest } = useHttpClient();
-  const [loadedItem, setLoadedItem] = useState();
+  const { sendRequest: fetchItemSendRequest } = useHttpClient();
+  const { sendRequest: addMediaSendRequest } = useHttpClient();
+  const [loadedItem, setLoadedItem] = useState(null);
+  const [mediaEditable, setMediaEditable] = useState(false);
+
+  const fetchItem = useCallback(async () => {
+    try {
+      const responseData = await fetchItemSendRequest(`/items/${itemId}`);
+      setLoadedItem(responseData);
+    } catch (err) {}
+  }, [fetchItemSendRequest, itemId]);
 
   useEffect(() => {
-    const fetchItem = async () => {
-      try {
-        const responseData = await sendRequest(`/items/${itemId}`);
-        setLoadedItem(responseData);
-      } catch (err) {}
-    };
-
     fetchItem();
-  }, [sendRequest, itemId]);
+  }, [fetchItem]);
 
-  const imageClickHandler = () => {};
+  const newMediaPickedHandler = async (pickedMedia) => {
+    const body = new FormData();
+    body.append("image", pickedMedia);
+    try {
+      await addMediaSendRequest(
+        `/items/addMedia/${itemId}`,
+        "PATCH",
+        body,
+        true
+      );
+      fetchItem();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const toggleEditMediaHandler = () => {
+    setMediaEditable((state) => !state);
+  };
+
+  const getMediaLink = (imageLink) => {
+    return mediaEditable
+      ? ""
+      : `/item/${itemId}/media/${imageLink.split("\\")[2]}`;
+  };
+
+  const deleteMediaHandler = (media) => {
+    console.log(media);
+  };
 
   return (
     <>
@@ -38,16 +73,38 @@ const Item = () => {
                 {loadedItem.collectionId.name}
               </Link>
             </p>
-            {/* <Button>Add Photo</Button> */}
-            <ImageUpload buttonTitle="Add Photo" />
+
+            {loadedItem.collectionId.creator === loggedInUserId && (
+              <div className={classes.actionButtons}>
+                <ImageUpload
+                  buttonTitle="Add Photo"
+                  onPicked={newMediaPickedHandler}
+                />
+
+                <Button onClick={toggleEditMediaHandler} width="150px">
+                  {mediaEditable ? "Finish Edit" : "Edit Media"}
+                </Button>
+              </div>
+            )}
           </div>
 
-          <Card className={classes.image} onClick={imageClickHandler}>
+          <Card className={classes.image} animate={!mediaEditable}>
             <Link
-              to={`/item/${itemId}/media/${
-                loadedItem.coverPicture.split("\\")[2]
-              }`}
+              to={getMediaLink(loadedItem.coverPicture)}
+              style={mediaEditable ? { cursor: "default" } : null}
             >
+              {mediaEditable && (
+                <IconOnImage>
+                  <IoTrash
+                    size={30}
+                    color="red"
+                    onClick={deleteMediaHandler.bind(
+                      null,
+                      loadedItem.coverPicture
+                    )}
+                  />
+                </IconOnImage>
+              )}
               <Image
                 src={loadedItem.coverPicture}
                 alt={loadedItem.coverPicture.split("\\")[2]}
@@ -58,8 +115,24 @@ const Item = () => {
           <div className={classes.mediaListContainer}>
             {loadedItem.mediaList.map((media) => {
               return (
-                <Card key={media} className={classes.mediaCard}>
-                  <Link to={`/item/${itemId}/media/${media.split("\\")[2]}`}>
+                <Card
+                  key={media}
+                  className={classes.mediaCard}
+                  animate={!mediaEditable}
+                >
+                  <Link
+                    to={getMediaLink(media)}
+                    style={mediaEditable ? { cursor: "default" } : null}
+                  >
+                    {mediaEditable && (
+                      <IconOnImage>
+                        <IoTrash
+                          size={30}
+                          color="red"
+                          onClick={deleteMediaHandler.bind(null, media)}
+                        />
+                      </IconOnImage>
+                    )}
                     <Image src={media} alt={media.split("\\")[2]} />
                   </Link>
                 </Card>

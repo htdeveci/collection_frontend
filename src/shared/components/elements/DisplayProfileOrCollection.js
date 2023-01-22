@@ -10,15 +10,20 @@ import { useHttpClient } from "../../hooks/http-hook";
 import ElementModal from "./ElementModal";
 import { Link } from "react-router-dom";
 
-const DisplayProfileOrCollection = (props) => {
+const DisplayProfileOrCollection = ({
+  type,
+  id,
+  data,
+  setData,
+  updateData,
+  dataError,
+}) => {
   const loggedInUserId = useSelector((state) => state.auth.userId);
   const { sendRequest: changePictureSendRequest } = useHttpClient();
   const { sendRequest: deleteElementSendRequest } = useHttpClient();
   const { sendRequest: addElementSendRequest } = useHttpClient();
   const [showModal, setShowModal] = useState(false);
   const [selectedElement, setSelectedElement] = useState(false);
-
-  const { type, id, data, setData, updateData, dataError } = props;
 
   const picturePickedHandler = async (pickedFile) => {
     try {
@@ -154,7 +159,11 @@ const DisplayProfileOrCollection = (props) => {
                     type={type === "profile" ? "collection" : "item"}
                     id={element.id}
                     collectionName={element.name}
-                    coverPicture={element.coverPicture}
+                    coverPicture={
+                      type === "profile"
+                        ? element.coverPicture
+                        : element.mediaList[0]
+                    }
                     editHandler={openModalHandler.bind(null, element)}
                     deleteHandler={deleteCollectionHandler.bind(
                       null,

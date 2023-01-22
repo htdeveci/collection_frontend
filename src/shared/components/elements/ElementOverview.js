@@ -5,39 +5,32 @@ import Card from "../UIElements/Card";
 import Image from "../UIElements/Image";
 import Button from "../FormElements/Button";
 
-const ElementOverview = (props) => {
+const ElementOverview = ({
+  type,
+  id,
+  coverPicture,
+  collectionName,
+  editHandler,
+  deleteHandler,
+  showActions,
+}) => {
   return (
     <Card>
       <Link
         className={classes.link}
-        to={`${props.type === "collection" ? "/collection/" : "/item/"}${
-          props.id
-        }`}
+        to={`${type === "collection" ? "/collection/" : "/item/"}${id}`}
       >
         <div className={classes.collection}>
-          <Image
-            src={props.coverPicture}
-            borderRadius={0}
-            alt={props.collectionName}
-          />
-          <p>{props.collectionName}</p>
+          <Image src={coverPicture} borderRadius={0} alt={collectionName} />
+          <p>{collectionName}</p>
         </div>
       </Link>
-      {props.showActions && (
+      {showActions && (
         <div className={classes.actions}>
-          <Button
-            small
-            type="button"
-            onClick={props.editHandler.bind(null, props.collectionId)}
-          >
+          <Button small type="button" onClick={editHandler}>
             Edit
           </Button>
-          <Button
-            small
-            type="button"
-            onClick={props.deleteHandler.bind(null, props.collectionId)}
-            inverse
-          >
+          <Button small type="button" onClick={deleteHandler} inverse>
             Delete
           </Button>
         </div>
