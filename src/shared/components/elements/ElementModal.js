@@ -138,7 +138,13 @@ const ElementModal = (props) => {
           }}
           showPreview
           onInput={inputHandler}
-          initialValue={selectedElement ? selectedElement.coverPicture : null}
+          initialValue={
+            selectedElement
+              ? type === "collection"
+                ? selectedElement.coverPicture
+                : selectedElement.mediaList[0]
+              : null
+          }
           small
         />
       </div>

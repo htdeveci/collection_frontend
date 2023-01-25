@@ -1,9 +1,41 @@
 .icon {
   z-index: 20;
   position: absolute;
+  cursor: pointer;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.background {
+  background-color: rgb(54, 54, 54);
+  padding: 10px;
+}
+
+.positionTopRight {
   top: 0.5rem;
   right: 0.5rem;
-  cursor: pointer;
+}
+
+.positionTopLeft {
+  top: 0.5rem;
+  left: 0.5rem;
+}
+
+.positionLeft {
+  top: 45%;
+  left: -6rem;
+}
+
+.positionRight {
+  top: 45%;
+  right: -6rem;
+}
+
+.positionBottomRight {
+  bottom: 2rem;
+  right: 2rem;
 }
 
 .iconAnimation {

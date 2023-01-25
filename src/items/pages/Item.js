@@ -8,7 +8,7 @@ import { useHttpClient } from "../../shared/hooks/http-hook";
 import Card from "../../shared/components/UIElements/Card";
 import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 import Button from "../../shared/components/FormElements/Button";
-import { IoTrash } from "react-icons/io5";
+import { IoTrash, IoMove } from "react-icons/io5";
 import IconOnImage from "../../shared/components/UIElements/IconOnImage";
 
 const Item = () => {
@@ -90,53 +90,67 @@ const Item = () => {
 
           <Card className={classes.image} animate={!mediaEditable}>
             <Link
-              to={getMediaLink(loadedItem.coverPicture)}
+              to={getMediaLink(loadedItem.mediaList[0])}
               style={mediaEditable ? { cursor: "default" } : null}
             >
               {mediaEditable && (
-                <IconOnImage>
-                  <IoTrash
-                    size={30}
-                    color="red"
-                    onClick={deleteMediaHandler.bind(
-                      null,
-                      loadedItem.coverPicture
-                    )}
-                  />
-                </IconOnImage>
+                <>
+                  <IconOnImage position="topLeft" showBackgroud>
+                    <IoMove size={30} color="yellow" />
+                  </IconOnImage>
+                  <IconOnImage position="topRight" showBackgroud>
+                    <IoTrash
+                      size={30}
+                      color="red"
+                      onClick={deleteMediaHandler.bind(
+                        null,
+                        loadedItem.coverPicture
+                      )}
+                    />
+                  </IconOnImage>
+                </>
               )}
               <Image
-                src={loadedItem.coverPicture}
-                alt={loadedItem.coverPicture.split("\\")[2]}
+                src={loadedItem.mediaList[0]}
+                alt={loadedItem.mediaList[0].split("\\")[2]}
               />
             </Link>
           </Card>
 
           <div className={classes.mediaListContainer}>
             {loadedItem.mediaList.map((media) => {
-              return (
-                <Card
-                  key={media}
-                  className={classes.mediaCard}
-                  animate={!mediaEditable}
-                >
-                  <Link
-                    to={getMediaLink(media)}
-                    style={mediaEditable ? { cursor: "default" } : null}
+              if (loadedItem.mediaList.indexOf(media) !== 0) {
+                return (
+                  <Card
+                    key={media}
+                    className={classes.mediaCard}
+                    animate={!mediaEditable}
                   >
-                    {mediaEditable && (
-                      <IconOnImage>
-                        <IoTrash
-                          size={30}
-                          color="red"
-                          onClick={deleteMediaHandler.bind(null, media)}
-                        />
-                      </IconOnImage>
-                    )}
-                    <Image src={media} alt={media.split("\\")[2]} />
-                  </Link>
-                </Card>
-              );
+                    <Link
+                      to={getMediaLink(media)}
+                      style={mediaEditable ? { cursor: "default" } : null}
+                    >
+                      {mediaEditable && (
+                        <>
+                          <IconOnImage position="topLeft" showBackgroud>
+                            <IoMove size={30} color="yellow" />
+                          </IconOnImage>
+                          <IconOnImage position="topRight" showBackgroud>
+                            <IoTrash
+                              size={30}
+                              color="red"
+                              onClick={deleteMediaHandler.bind(null, media)}
+                            />
+                          </IconOnImage>
+                        </>
+                      )}
+                      <Image src={media} alt={media.split("\\")[2]} />
+                    </Link>
+                  </Card>
+                );
+              } else {
+                return <div key={media}></div>;
+              }
             })}
           </div>
         </>
