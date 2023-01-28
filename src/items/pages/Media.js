@@ -1,19 +1,17 @@
+import { useRef, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   IoArrowBackCircle,
   IoArrowForwardCircle,
   IoCloseCircle,
-  IoShareSocial,
 } from "react-icons/io5";
 
 import classes from "./Media.module.css";
 import Backdrop from "../../shared/components/UIElements/Backdrop";
 import { IMAGE_BASE_URL } from "../../shared/utils/global-constants";
 import IconOnImage from "../../shared/components/UIElements/IconOnImage";
-import { useEffect } from "react";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import { useState } from "react";
-import { useRef } from "react";
+import ShareButtons from "../../shared/components/share/ShareButtons";
 
 const Media = () => {
   const navigate = useNavigate();
@@ -74,10 +72,6 @@ const Media = () => {
     );
   };
 
-  const shareHandler = () => {
-    console.log(mediaName);
-  };
-
   const keyUpHandler = (event) => {
     switch (event.code) {
       case "ArrowRight":
@@ -133,11 +127,7 @@ const Media = () => {
           />
         </div>
 
-        <button onClick={shareHandler}>
-          <IconOnImage position="bottomRight">
-            <IoShareSocial size={50} color="green" />
-          </IconOnImage>
-        </button>
+        <ShareButtons iconSize={40} />
       </div>
     </>
   );

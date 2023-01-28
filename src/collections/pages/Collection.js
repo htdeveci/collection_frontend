@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 // import classes from "./Collection.module.css";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import DisplayProfileOrCollection from "../../shared/components/elements/DisplayProfileOrCollection";
+import ShareButtons from "../../shared/components/share/ShareButtons";
 
 const Collection = () => {
   const collectionId = useParams().collectionId;
@@ -20,14 +21,17 @@ const Collection = () => {
   }, [fetchCollection]);
 
   return (
-    <DisplayProfileOrCollection
-      type="collection"
-      id={collectionId}
-      data={collection}
-      setData={setCollection}
-      dataError={error}
-      updateData={fetchCollection}
-    />
+    <>
+      <DisplayProfileOrCollection
+        type="collection"
+        id={collectionId}
+        data={collection}
+        setData={setCollection}
+        dataError={error}
+        updateData={fetchCollection}
+      />
+      <ShareButtons iconSize={40} color="orange" />
+    </>
   );
 };
 

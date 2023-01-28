@@ -7,7 +7,10 @@ import Backdrop from "./Backdrop";
 const ModalOverlay = (props) => {
   const content = (
     <div className={`${classes.modal} ${props.className}`} style={props.style}>
-      <header className={`${classes.modal__header} ${props.headerClass}`}>
+      <header
+        className={`${classes.modal__header} ${props.headerClass}`}
+        style={props.headerStyle}
+      >
         <h2>{props.header}</h2>
       </header>
       <form
@@ -18,7 +21,10 @@ const ModalOverlay = (props) => {
         <div className={`${classes.modal__content} ${props.contentClass}`}>
           {props.children}
         </div>
-        <footer className={`${classes.modal__footer} ${props.footerClass}`}>
+        <footer
+          className={`${classes.modal__footer} ${props.footerClass}`}
+          style={props.footerStyle}
+        >
           {props.footer}
         </footer>
       </form>

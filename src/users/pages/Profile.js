@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 
 // import classes from "./Profile.module.css";
 import DisplayProfileOrCollection from "../../shared/components/elements/DisplayProfileOrCollection";
+import ShareButtons from "../../shared/components/share/ShareButtons";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 
 const Profile = () => {
@@ -21,14 +22,17 @@ const Profile = () => {
   }, [fetchUser]);
 
   return (
-    <DisplayProfileOrCollection
-      type="profile"
-      id={userId}
-      data={user}
-      setData={setUser}
-      dataError={getUserError}
-      updateData={fetchUser}
-    />
+    <>
+      <DisplayProfileOrCollection
+        type="profile"
+        id={userId}
+        data={user}
+        setData={setUser}
+        dataError={getUserError}
+        updateData={fetchUser}
+      />
+      <ShareButtons iconSize={40} color="orange" />
+    </>
   );
 };
 

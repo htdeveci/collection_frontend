@@ -10,14 +10,19 @@ import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 import Button from "../../shared/components/FormElements/Button";
 import { IoTrash, IoMove } from "react-icons/io5";
 import IconOnImage from "../../shared/components/UIElements/IconOnImage";
+import ShareButtons from "../../shared/components/share/ShareButtons";
+import ConfirmationModal from "../../shared/components/UIElements/ConfirmationModal";
 
 const Item = () => {
   const loggedInUserId = useSelector((state) => state.auth.userId);
   const itemId = useParams().itemId;
   const { sendRequest: fetchItemSendRequest } = useHttpClient();
   const { sendRequest: addMediaSendRequest } = useHttpClient();
+  const { sendRequest: deleteMediaSendRequest } = useHttpClient();
   const [loadedItem, setLoadedItem] = useState(null);
   const [mediaEditable, setMediaEditable] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [selectedMediaName, setSelectedMediaName] = useState(null);
 
   const fetchItem = useCallback(async () => {
     try {
@@ -29,6 +34,11 @@ const Item = () => {
   useEffect(() => {
     fetchItem();
   }, [fetchItem]);
+
+  useEffect(() => {
+    if (loadedItem)
+      setMediaEditable((state) => state && loadedItem.mediaList.length > 1);
+  }, [loadedItem]);
 
   const newMediaPickedHandler = async (pickedMedia) => {
     const body = new FormData();
@@ -56,8 +66,31 @@ const Item = () => {
       : `/item/${itemId}/media/${imageLink.split("\\")[2]}`;
   };
 
-  const deleteMediaHandler = (media) => {
-    console.log(media);
+  const deleteMediaHandler = async (media) => {
+    setSelectedMediaName(media);
+    setShowConfirmationModal(true);
+  };
+
+  const deleteMedia = async (event) => {
+    event.preventDefault();
+    try {
+      await deleteMediaSendRequest(
+        `/items/${itemId}/media/${selectedMediaName.split("\\")[2]}`,
+        "DELETE",
+        null,
+        true
+      );
+      fetchItem();
+    } catch (err) {
+      console.log(err);
+    }
+    setSelectedMediaName(null);
+    setShowConfirmationModal(false);
+  };
+
+  const cancelDeleteMediaHandler = () => {
+    setSelectedMediaName(null);
+    setShowConfirmationModal(false);
   };
 
   return (
@@ -81,9 +114,11 @@ const Item = () => {
                   onPicked={newMediaPickedHandler}
                 />
 
-                <Button onClick={toggleEditMediaHandler} width="150px">
-                  {mediaEditable ? "Finish Edit" : "Edit Media"}
-                </Button>
+                {loadedItem.mediaList.length > 1 && (
+                  <Button onClick={toggleEditMediaHandler} width="150px">
+                    {mediaEditable ? "Finish Edit" : "Edit Media"}
+                  </Button>
+                )}
               </div>
             )}
           </div>
@@ -104,7 +139,7 @@ const Item = () => {
                       color="red"
                       onClick={deleteMediaHandler.bind(
                         null,
-                        loadedItem.coverPicture
+                        loadedItem.mediaList[0]
                       )}
                     />
                   </IconOnImage>
@@ -155,6 +190,15 @@ const Item = () => {
           </div>
         </>
       )}
+
+      <ShareButtons iconSize={40} color="orange" />
+
+      <ConfirmationModal
+        show={showConfirmationModal}
+        onSubmit={deleteMedia}
+        onCancel={cancelDeleteMediaHandler}
+        message="Do you realy want to delete this media?"
+      />
     </>
   );
 };

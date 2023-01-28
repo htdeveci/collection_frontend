@@ -1,0 +1,35 @@
+.buttonsContainer {
+  position: fixed;
+  right: 2rem;
+  bottom: 1rem;
+  z-index: 15;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  overflow: hidden;
+  padding: 1rem;
+}
+
+.enter {
+  transform: translateY(3rem);
+  opacity: 0;
+}
+
+.enterActive {
+  transform: translateY(0);
+  opacity: 1;
+  transition: all 500ms;
+}
+
+.exit {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.exitActive {
+  transform: translateY(3rem);
+  opacity: 0;
+  transition: all 500ms;
+}
