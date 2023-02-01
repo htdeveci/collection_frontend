@@ -9,6 +9,7 @@ import { VALIDATOR_REQUIRE } from "../../utils/validators";
 
 const ElementModal = (props) => {
   const [pickedImage, setPickedImage] = useState(null);
+  const [visibility, setVisibility] = useState("everyone");
 
   const {
     type,
@@ -47,11 +48,13 @@ const ElementModal = (props) => {
         body = new FormData();
         body.append("name", formState.inputs.name.value);
         body.append("description", formState.inputs.description.value);
+        body.append("visibility", visibility);
         body.append("image", pickedImage);
       } else {
         body = JSON.stringify({
           name: formState.inputs.name.value,
           description: formState.inputs.description.value,
+          visibility,
         });
       }
       submitHandlerProp(body);
@@ -62,12 +65,14 @@ const ElementModal = (props) => {
         body.append("name", formState.inputs.name.value);
         body.append("description", formState.inputs.description.value);
         body.append("collectionId", collectionId);
+        body.append("visibility", visibility);
         body.append("image", pickedImage);
       } else {
         body = JSON.stringify({
           name: formState.inputs.name.value,
           description: formState.inputs.description.value,
           collectionId: collectionId,
+          visibility,
         });
       }
       submitHandlerProp(body);
@@ -94,6 +99,10 @@ const ElementModal = (props) => {
   const getHeader = () => {
     if (initialElement) return `Edit ${getCapitalized(type)}`;
     else return `Add ${getCapitalized(type)}`;
+  };
+
+  const visibilityChangeHandler = (event) => {
+    setVisibility(event.target.value);
   };
 
   return (
@@ -147,6 +156,18 @@ const ElementModal = (props) => {
           }
           small
         />
+
+        <div>
+          <label htmlFor="visibilty">Who can see this {type}? </label>
+          <select
+            id="visibilty"
+            defaultValue="everyone"
+            onChange={visibilityChangeHandler}
+          >
+            <option value="self">Just Me</option>
+            <option value="everyone">Everyone</option>
+          </select>
+        </div>
       </div>
     </Modal>
   );

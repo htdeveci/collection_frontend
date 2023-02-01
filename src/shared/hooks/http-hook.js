@@ -21,7 +21,7 @@ export const useHttpClient = () => {
         } catch (err) {}
       }
 
-      if (includeToken)
+      if (includeToken && token)
         headers = { ...headers, Authorization: "Bearer " + token };
 
       const httpAbortController = new AbortController();
