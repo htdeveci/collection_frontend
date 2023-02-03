@@ -13,12 +13,7 @@ const Profile = () => {
     useHttpClient();
 
   const fetchUser = useCallback(async () => {
-    const responseData = await getUserSendRequest(
-      `/users/${userId}`,
-      "GET",
-      null,
-      true
-    );
+    const responseData = await getUserSendRequest(`/users/${userId}`);
     setUser(responseData);
   }, [userId, getUserSendRequest]);
 

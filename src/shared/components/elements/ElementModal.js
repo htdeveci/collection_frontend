@@ -161,7 +161,9 @@ const ElementModal = (props) => {
           <label htmlFor="visibilty">Who can see this {type}? </label>
           <select
             id="visibilty"
-            defaultValue="everyone"
+            defaultValue={
+              selectedElement ? selectedElement.visibility : "everyone"
+            }
             onChange={visibilityChangeHandler}
           >
             <option value="self">Just Me</option>

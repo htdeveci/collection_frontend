@@ -15,6 +15,7 @@ const useAuth = () => {
     const storedData = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_USER_DATA)
     );
+
     if (storedData) {
       if (new Date(storedData.expiration) > new Date()) {
         dispatch(

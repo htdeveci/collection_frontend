@@ -15,8 +15,13 @@ import ConfirmationModal from "../../shared/components/UIElements/ConfirmationMo
 
 const Item = () => {
   const loggedInUserId = useSelector((state) => state.auth.userId);
+  const token = useSelector((state) => state.auth.token);
   const itemId = useParams().itemId;
-  const { sendRequest: fetchItemSendRequest } = useHttpClient();
+  const {
+    sendRequest: fetchItemSendRequest,
+    error: fetchItemError,
+    clearError: fetchItemClearError,
+  } = useHttpClient();
   const { sendRequest: addMediaSendRequest } = useHttpClient();
   const { sendRequest: deleteMediaSendRequest } = useHttpClient();
   const [loadedItem, setLoadedItem] = useState(null);
@@ -27,9 +32,12 @@ const Item = () => {
   const fetchItem = useCallback(async () => {
     try {
       const responseData = await fetchItemSendRequest(`/items/${itemId}`);
+      if (responseData) fetchItemClearError();
       setLoadedItem(responseData);
-    } catch (err) {}
-  }, [fetchItemSendRequest, itemId]);
+    } catch (err) {
+      console.log(err);
+    }
+  }, [fetchItemSendRequest, itemId, fetchItemClearError, token]);
 
   useEffect(() => {
     fetchItem();
@@ -190,6 +198,8 @@ const Item = () => {
           </div>
         </>
       )}
+
+      {fetchItemError && <p>{fetchItemError}</p>}
 
       <ShareButtons iconSize={40} color="orange" />
 

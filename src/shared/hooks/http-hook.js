@@ -6,13 +6,12 @@ const BACKEND_MAIN_URL = "http://localhost:5000/api";
 export const useHttpClient = () => {
   const [isLoading, setIsLoading] = useState();
   const [error, setError] = useState();
-  const token = useSelector((state) => state.auth.token);
+  const token = useSelector((store) => store.auth.token);
   const activeHttpRequests = useRef([]);
 
   const sendRequest = useCallback(
-    async (url, method = "GET", body = null, includeToken = false) => {
+    async (url, method = "GET", body = null, includeToken = true) => {
       setIsLoading(true);
-
       let headers = {};
       if (body !== null) {
         headers = { "Content-Type": "application/json" };
@@ -21,8 +20,12 @@ export const useHttpClient = () => {
         } catch (err) {}
       }
 
-      if (includeToken && token)
-        headers = { ...headers, Authorization: "Bearer " + token };
+      if (includeToken && token) {
+        headers = {
+          ...headers,
+          Authorization: "Bearer " + token,
+        };
+      }
 
       const httpAbortController = new AbortController();
       activeHttpRequests.current.push(httpAbortController);
@@ -54,9 +57,9 @@ export const useHttpClient = () => {
     [token]
   );
 
-  const clearError = () => {
+  const clearError = useCallback(() => {
     setError(null);
-  };
+  }, []);
 
   useEffect(() => {
     return () => {

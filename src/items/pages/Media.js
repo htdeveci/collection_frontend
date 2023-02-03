@@ -23,8 +23,10 @@ const Media = () => {
 
   useEffect(() => {
     const fetchItem = async () => {
-      const response = await sendRequest(`/items/${itemId}`);
-      setItem(response);
+      try {
+        const response = await sendRequest(`/items/${itemId}`);
+        setItem(response);
+      } catch (err) {}
     };
     fetchItem();
     divRef.current.focus();
@@ -120,14 +122,20 @@ const Media = () => {
             </IconOnImage>
           )}
 
-          <img
-            className={classes.image}
-            src={IMAGE_BASE_URL + mediaName}
-            alt={mediaName}
-          />
-        </div>
+          {item && (
+            <>
+              <img
+                className={classes.image}
+                src={IMAGE_BASE_URL + mediaName}
+                alt={mediaName}
+              />
 
-        <ShareButtons iconSize={40} />
+              <ShareButtons iconSize={40} />
+            </>
+          )}
+
+          {!item && <p>Error</p>}
+        </div>
       </div>
     </>
   );

@@ -11,12 +11,7 @@ const Home = () => {
   useEffect(() => {
     const fetchCollections = async () => {
       try {
-        const responseData = await sendRequest(
-          "/collections",
-          "GET",
-          null,
-          true
-        );
+        const responseData = await sendRequest("/collections");
         setLoadedCollections(responseData.collections);
       } catch (err) {
         console.log(err);
