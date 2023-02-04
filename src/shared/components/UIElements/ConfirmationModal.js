@@ -1,28 +1,29 @@
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import Button from "@mui/material/Button";
 import classes from "./ConfirmationModal.module.css";
-import Button from "../FormElements/Button";
-import Modal from "./Modal";
 
-const ConfirmationModal = ({ show, onCancel, message, onSubmit }) => {
+const ConfirmationModal = ({ show, message, onSubmit, onCancel }) => {
   return (
-    <Modal
-      show={show}
-      onCancel={onCancel}
-      header="Are You Sure"
-      headerClass
-      footerStyle={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}
-      footer={
-        <>
-          <Button type="submit" onClick={onSubmit}>
-            Yes
-          </Button>
-          <Button onClick={onCancel}>No</Button>
-        </>
-      }
-      headerStyle={{ display: "flex", justifyContent: "flex-start" }}
-      onSubmit={onSubmit}
-    >
-      <p> {message}</p>
-    </Modal>
+    <Dialog open={show} onClose={onCancel}>
+      <DialogTitle>Are You Sure</DialogTitle>
+
+      <DialogContent>
+        <DialogContentText>{message}</DialogContentText>
+      </DialogContent>
+
+      <DialogActions>
+        <Button onClick={onCancel}>No</Button>
+        <Button type="submit" onClick={onSubmit} color="error">
+          Yes
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

@@ -7,7 +7,6 @@ import {
 } from "react-icons/io5";
 
 import classes from "./Media.module.css";
-import Backdrop from "../../shared/components/UIElements/Backdrop";
 import { IMAGE_BASE_URL } from "../../shared/utils/global-constants";
 import IconOnImage from "../../shared/components/UIElements/IconOnImage";
 import { useHttpClient } from "../../shared/hooks/http-hook";
@@ -89,7 +88,7 @@ const Media = () => {
 
   return (
     <>
-      <Backdrop onClose={closePageHandler} />
+      {/* <Backdrop onClose={closePageHandler} /> */}
       <div
         tabIndex={1}
         className={classes.outerContainer}

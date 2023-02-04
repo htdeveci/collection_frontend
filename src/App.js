@@ -9,6 +9,8 @@ import Media from "./items/pages/Media";
 import Profile from "./users/pages/Profile";
 import Authenticate from "./users/pages/Authenticate";
 import useAuth from "./shared/hooks/auth-hook";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { AppBar, Container, Toolbar } from "@mui/material";
 
 function App() {
   const { token } = useAuth();
@@ -41,11 +43,38 @@ function App() {
     );
   }
 
+  const theme = createTheme({
+    palette: {
+      mode: "dark",
+      primary: {
+        main: "#fd9801",
+      },
+      secondary: {
+        main: "#198391",
+      },
+    },
+  });
+
   return (
-    <div className={classes.appMain}>
-      <NavBar />
-      {routes}
-    </div>
+    <ThemeProvider theme={theme}>
+      <Container
+        sx={{
+          padding: "0 !important",
+          minHeight: "100vh",
+          backgroundColor: theme.palette.background.default,
+        }}
+      >
+        <NavBar />
+        {routes}
+      </Container>
+      {/* <div
+        className={classes.appMain}
+        style={{ backgroundColor: theme.palette.background.default }}
+      >
+        <NavBar />
+        {routes}
+      </div> */}
+    </ThemeProvider>
   );
 }
 

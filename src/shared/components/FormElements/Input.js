@@ -1,4 +1,5 @@
 import { useEffect, useReducer } from "react";
+import TextField from "@mui/material/TextField";
 
 import classes from "./Input.module.css";
 import { validate } from "../../utils/validators";
@@ -22,14 +23,21 @@ const inputReducer = (state, action) => {
   }
 };
 
-const Input = (props) => {
+const Input = ({
+  id,
+  onInput,
+  initialValue,
+  type,
+  label,
+  helperText = "",
+  validators,
+}) => {
   const [inputState, dispatch] = useReducer(inputReducer, {
-    value: props.initialValue || "",
+    value: initialValue || "",
     isTouched: false,
-    isValid: props.initialValue ? true : false,
+    isValid: initialValue ? true : false,
   });
 
-  const { id, onInput } = props;
   const { value, isValid } = inputState;
 
   useEffect(() => {
@@ -40,7 +48,7 @@ const Input = (props) => {
     dispatch({
       type: "CHANGE",
       val: event.target.value,
-      validators: props.validators,
+      validators: validators,
     });
   };
 
@@ -51,19 +59,16 @@ const Input = (props) => {
   };
 
   return (
-    <>
-      <input
-        id={id}
-        className={`${classes.input} ${
-          !inputState.isValid && inputState.isTouched && classes.hasError
-        }`}
-        type={props.type}
-        placeholder={props.placeholder}
-        onChange={changeHandler}
-        onBlur={touchHandler}
-        value={value}
-      />
-    </>
+    <TextField
+      id={id}
+      type={type}
+      label={label}
+      onChange={changeHandler}
+      onBlur={touchHandler}
+      value={value}
+      helperText={!isValid && inputState.isTouched ? helperText : ""}
+      error={!isValid && inputState.isTouched}
+    />
   );
 };
 

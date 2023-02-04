@@ -1,15 +1,28 @@
 import { useState } from "react";
 
-import Button from "../FormElements/Button";
+import classes from "./ElementModal.module.css";
 import ImageUpload from "../FormElements/ImageUpload";
 import Input from "../FormElements/Input";
-import Modal from "../UIElements/Modal";
 import { useForm } from "../../hooks/form-hook";
 import { VALIDATOR_REQUIRE } from "../../utils/validators";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  useTheme,
+} from "@mui/material";
 
 const ElementModal = (props) => {
   const [pickedImage, setPickedImage] = useState(null);
   const [visibility, setVisibility] = useState("everyone");
+  const theme = useTheme();
 
   const {
     type,
@@ -106,72 +119,84 @@ const ElementModal = (props) => {
   };
 
   return (
-    <Modal
-      show={!!showModal}
-      onCancel={cancelHandler}
-      header={getHeader()}
-      footer={
-        <div style={{ display: "flex", justifyContent: "left", gap: "1rem" }}>
-          <Button onClick={submitHandler} disabled={!formState.isValid}>
-            {getHeader()}
-          </Button>
-          <Button inverse onClick={cancelHandler}>
-            Close
-          </Button>
-        </div>
-      }
-    >
-      <div>
-        <Input
-          id="name"
-          type="text"
-          placeholder={`${getCapitalized(type)} Name`}
-          validators={[VALIDATOR_REQUIRE()]}
-          onInput={inputHandler}
-          initialValue={selectedElement ? selectedElement.name : ""}
-        />
-        <Input
-          id="description"
-          type="text"
-          placeholder="Description"
-          validators={[VALIDATOR_REQUIRE()]}
-          onInput={inputHandler}
-          initialValue={selectedElement ? selectedElement.description : ""}
-        />
+    <Dialog open={showModal} onClose={cancelHandler}>
+      <DialogTitle bgcolor={theme.palette.primary.dark}>
+        {getHeader()}
+      </DialogTitle>
 
-        <ImageUpload
-          id="coverPicture"
-          buttonTitle="Select Cover Picture"
-          onPicked={(pickedFile) => {
-            setPickedImage(pickedFile);
-          }}
-          showPreview
-          onInput={inputHandler}
-          initialValue={
-            selectedElement
-              ? type === "collection"
-                ? selectedElement.coverPicture
-                : selectedElement.mediaList[0]
-              : null
-          }
-          small
-        />
+      <DialogContent className={classes.dialogContent}>
+        <Box className={classes.inputFields}>
+          <Input
+            id="name"
+            type="text"
+            label={`${getCapitalized(type)} Name`}
+            validators={[VALIDATOR_REQUIRE()]}
+            onInput={inputHandler}
+            initialValue={selectedElement ? selectedElement.name : ""}
+            helperText="Name can not be empty."
+          />
 
-        <div>
-          <label htmlFor="visibilty">Who can see this {type}? </label>
-          <select
-            id="visibilty"
-            defaultValue={
-              selectedElement ? selectedElement.visibility : "everyone"
+          <Input
+            id="description"
+            type="text"
+            label="Description"
+            validators={[VALIDATOR_REQUIRE()]}
+            onInput={inputHandler}
+            initialValue={selectedElement ? selectedElement.description : ""}
+            helperText="Description can not be empty."
+          />
+
+          <FormControl>
+            <InputLabel id="visibilitySelection">Visible to</InputLabel>
+            <Select
+              id="visibilitySelection"
+              label="Visible to"
+              defaultValue={
+                selectedElement ? selectedElement.visibility : "everyone"
+              }
+              onChange={visibilityChangeHandler}
+            >
+              <MenuItem value="self">Just Me</MenuItem>
+              <MenuItem value="everyone">Everyone</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+
+        <Box className={classes.imageField}>
+          <ImageUpload
+            id="coverPicture"
+            buttonTitle="Select Cover Picture"
+            onPicked={(pickedFile) => {
+              setPickedImage(pickedFile);
+            }}
+            showPreview
+            onInput={inputHandler}
+            initialValue={
+              selectedElement
+                ? type === "collection"
+                  ? selectedElement.coverPicture
+                  : selectedElement.mediaList[0]
+                : null
             }
-            onChange={visibilityChangeHandler}
-          >
-            <option value="self">Just Me</option>
-            <option value="everyone">Everyone</option>
-          </select>
-        </div>
-      </div>
-    </Modal>
+          />
+        </Box>
+      </DialogContent>
+
+      <DialogActions className={classes.dialogActions}>
+        <Button onClick={cancelHandler} color="error">
+          Close
+        </Button>
+
+        <Button
+          onClick={submitHandler}
+          disabled={!formState.isValid}
+          variant="contained"
+          color="success"
+        >
+          {getHeader()}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

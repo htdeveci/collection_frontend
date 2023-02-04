@@ -30,7 +30,8 @@ const Home = () => {
               key={collection.id}
               id={collection.id}
               type="collection"
-              collectionName={collection.name}
+              elementName={collection.name}
+              elementDescription={collection.description}
               coverPicture={collection.coverPicture}
             />
           );

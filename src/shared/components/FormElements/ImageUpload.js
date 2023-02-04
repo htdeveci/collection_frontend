@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
 import classes from "./ImageUpload.module.css";
-import Button from "./Button";
 import Image from "../UIElements/Image";
+import { Button, useTheme } from "@mui/material";
 
 const ImageUpload = ({
   id,
@@ -11,12 +11,15 @@ const ImageUpload = ({
   onPicked,
   showPreview,
   buttonTitle,
-  small,
+  Icon = null,
+  color = "secondary",
+  sx,
 }) => {
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [initialImage, setInitialImage] = useState(null);
   const filePickerRef = useRef();
+  const theme = useTheme();
 
   useEffect(() => {
     if (onInput) {
@@ -67,25 +70,54 @@ const ImageUpload = ({
         ref={filePickerRef}
         onChange={pickedHandler}
       />
+
       {!!initialImage && (
         <Image
           className={classes.preview}
           src={initialImage}
           alt="CoverPicture"
-          width="13rem"
-          height="13rem"
+          width="14rem"
+          height="12rem"
           borderRadius="0"
         />
       )}
+
       {!initialImage && showPreview && (
         <div className={classes.preview}>
           {previewUrl && <img src={previewUrl} alt="Preview" />}
           {!previewUrl && <p>Please pick an image.</p>}
         </div>
       )}
-      <Button type="button" onClick={pickImageHandler} small={small}>
-        {buttonTitle}
-      </Button>
+
+      {Icon && (
+        <div
+          onClick={pickImageHandler}
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: "100%",
+          }}
+        >
+          <Icon size={26} color={theme.palette[color].dark} />
+        </div>
+      )}
+
+      {!Icon && (
+        <Button
+          type="button"
+          onClick={pickImageHandler}
+          variant="outlined"
+          color={color}
+          size="small"
+          fullWidth
+          sx={sx}
+        >
+          {buttonTitle}
+        </Button>
+      )}
     </>
   );
 };

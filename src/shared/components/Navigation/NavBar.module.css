@@ -24,11 +24,11 @@
 }
 
 .header a:hover {
-  color: rgb(253, 152, 1);
+  color: #fd9801;
 }
 .header a:active,
 .header a.active {
-  color: rgb(255, 172, 49);
+  color: #ffac31;
 }
 
 .homeLink {
@@ -38,4 +38,16 @@
 
 .homeLink a {
   font-size: 3.157rem;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu {
+  display: flex;
+  column-gap: 1rem;
+  align-items: center;
 }

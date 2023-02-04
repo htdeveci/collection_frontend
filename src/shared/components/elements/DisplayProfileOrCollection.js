@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import classes from "./DisplayProfileOrCollection.module.css";
@@ -8,7 +8,14 @@ import AddElementButton from "./AddElementButton";
 import Image from "../UIElements/Image";
 import { useHttpClient } from "../../hooks/http-hook";
 import ElementModal from "./ElementModal";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import Avatar from "@mui/material/Avatar";
+import { IMAGE_BASE_URL } from "../../utils/global-constants";
+import { Badge, Button, Stack, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import { IoPencil } from "react-icons/io5";
+import { useTheme } from "@mui/system";
+import ConfirmationModal from "../UIElements/ConfirmationModal";
 
 const DisplayProfileOrCollection = ({
   type,
@@ -24,6 +31,7 @@ const DisplayProfileOrCollection = ({
   const { sendRequest: addElementSendRequest } = useHttpClient();
   const [showModal, setShowModal] = useState(false);
   const [selectedElement, setSelectedElement] = useState(false);
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
 
   const picturePickedHandler = async (pickedFile) => {
     try {
@@ -53,8 +61,8 @@ const DisplayProfileOrCollection = ({
   };
 
   const closeModalHandler = () => {
-    setSelectedElement(null);
     setShowModal(false);
+    setSelectedElement(null);
   };
 
   const submitModalHandler = async (body) => {
@@ -79,10 +87,17 @@ const DisplayProfileOrCollection = ({
     }
   };
 
-  const deleteCollectionHandler = async (elementId) => {
+  const deleteElementHandler = (element) => {
+    setSelectedElement(element);
+    setShowConfirmationDialog(true);
+  };
+
+  const deleteElement = async () => {
     try {
       await deleteElementSendRequest(
-        `/${type === "profile" ? "collections" : "items"}/${elementId}`,
+        `/${type === "profile" ? "collections" : "items"}/${
+          selectedElement.id
+        }`,
         "DELETE",
         null,
         true
@@ -91,6 +106,7 @@ const DisplayProfileOrCollection = ({
     } catch (err) {
       console.log(err);
     }
+    setShowConfirmationDialog(false);
   };
 
   const isUserAuthorized = () => {
@@ -98,50 +114,86 @@ const DisplayProfileOrCollection = ({
     else return data.creator.id === loggedInUserId;
   };
 
+  const getBadgeContent = () => {
+    if (isUserAuthorized()) {
+      return <ImageUpload Icon={IoPencil} onPicked={picturePickedHandler} />;
+    }
+    return null;
+  };
+
   return (
     <>
       {data && (
         <>
           <header className={classes.header}>
-            <Image
-              src={
-                type === "profile"
-                  ? data.profilePicture
-                    ? data.profilePicture
-                    : null
-                  : data.coverPicture
-                  ? data.coverPicture
-                  : null
-              }
-              alt={type === "profile" ? "profile" : "cover"}
-              width={150}
-              height={150}
-              borderRadius={50}
-            />
-
-            <div>
-              <h1 className={classes.username}>
-                {type === "profile" ? data.username : data.name}
-              </h1>
-              {type === "collection" && (
-                <p>
-                  {"created by "}
-                  <Link to={`/profile/${data.creator.id}`}>
-                    {data.creator.username}
-                  </Link>
-                </p>
-              )}
-              {isUserAuthorized() && (
-                <ImageUpload
-                  buttonTitle={
+            <Box flex={1} alignSelf="center" textAlign="center">
+              <Badge
+                showZero={true}
+                badgeContent={getBadgeContent()}
+                color="primary"
+                overlap="circular"
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                className={classes.badge}
+              >
+                <Avatar
+                  src={IMAGE_BASE_URL.concat(
                     type === "profile"
-                      ? "Change Profile Picture"
-                      : "Change Cover Picture"
-                  }
-                  onPicked={picturePickedHandler}
+                      ? data.profilePicture
+                        ? data.profilePicture
+                        : null
+                      : data.coverPicture
+                      ? data.coverPicture
+                      : null
+                  )}
+                  alt={type === "profile" ? "profile" : "cover"}
+                  sx={{ width: 200, height: 200 }}
                 />
+              </Badge>
+            </Box>
+
+            <Box
+              flex={3}
+              sx={{
+                paddingTop: 3,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                // justifyContent: "space-between",
+              }}
+            >
+              <Typography variant="h2" color="primary">
+                {type === "profile" ? data.username : data.name}
+              </Typography>
+
+              {type === "collection" && (
+                <Stack textAlign="center" spacing={3}>
+                  <>
+                    <Typography variant="subtitle1" color="text.primary">
+                      {data.description}
+                    </Typography>
+
+                    <Stack>
+                      <Typography variant="caption" color="text.primary">
+                        created by
+                      </Typography>
+
+                      <Typography
+                        variant="p"
+                        component={NavLink}
+                        to={`/profile/${data.creator.id}`}
+                        color="secondary"
+                        sx={{ textDecoration: "none" }}
+                      >
+                        {data.creator.username}
+                      </Typography>
+                    </Stack>
+                  </>
+                </Stack>
               )}
-            </div>
+            </Box>
           </header>
 
           <section className={classes.collectionOverviewSection}>
@@ -151,6 +203,7 @@ const DisplayProfileOrCollection = ({
                 onClick={openModalHandler.bind(null, null)}
               />
             )}
+
             {(type === "profile" ? data.collectionList : data.itemList).map(
               (element) => {
                 return (
@@ -158,22 +211,29 @@ const DisplayProfileOrCollection = ({
                     key={element.id}
                     type={type === "profile" ? "collection" : "item"}
                     id={element.id}
-                    collectionName={element.name}
+                    elementName={element.name}
+                    elementDescription={element.description}
                     coverPicture={
                       type === "profile"
                         ? element.coverPicture
                         : element.mediaList[0]
                     }
                     editHandler={openModalHandler.bind(null, element)}
-                    deleteHandler={deleteCollectionHandler.bind(
-                      null,
-                      element.id
-                    )}
+                    deleteHandler={deleteElementHandler.bind(null, element)}
                     showActions={isUserAuthorized()}
                   />
                 );
               }
             )}
+
+            <ConfirmationModal
+              show={showConfirmationDialog}
+              onCancel={() => setShowConfirmationDialog(false)}
+              message={`Do you realy want to delete this ${
+                type === "profile" ? "collection" : "item"
+              }?`}
+              onSubmit={deleteElement}
+            />
           </section>
 
           <ElementModal

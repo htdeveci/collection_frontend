@@ -1,12 +1,19 @@
 .formContainer {
   display: flex;
-  margin-top: 20%;
+  height: 80vh;
   justify-content: center;
   align-items: center;
 }
 
+.cardContentAndAction {
+  display: flex;
+  flex-direction: column;
+  row-gap: 2rem;
+}
+
+/* 
 .cardContainer {
-  background-color: rgb(230, 117, 25);
+  background-color: rgb(201, 180, 162);
   text-align: center;
   color: hsl(28, 44%, 92%);
   width: 20rem;
@@ -35,3 +42,4 @@
   color: hsl(28, 44%, 92%);
   text-align: left;
 }
+ */

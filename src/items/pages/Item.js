@@ -5,13 +5,22 @@ import { useSelector } from "react-redux";
 import classes from "./Item.module.css";
 import Image from "../../shared/components/UIElements/Image";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import Card from "../../shared/components/UIElements/Card";
 import ImageUpload from "../../shared/components/FormElements/ImageUpload";
-import Button from "../../shared/components/FormElements/Button";
 import { IoTrash, IoMove } from "react-icons/io5";
 import IconOnImage from "../../shared/components/UIElements/IconOnImage";
 import ShareButtons from "../../shared/components/share/ShareButtons";
 import ConfirmationModal from "../../shared/components/UIElements/ConfirmationModal";
+import {
+  Box,
+  Button,
+  Card,
+  CardActionArea,
+  CardMedia,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import { IMAGE_BASE_URL } from "../../shared/utils/global-constants";
 
 const Item = () => {
   const loggedInUserId = useSelector((state) => state.auth.userId);
@@ -28,6 +37,8 @@ const Item = () => {
   const [mediaEditable, setMediaEditable] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [selectedMediaName, setSelectedMediaName] = useState(null);
+  const [mediaDraggable, setMediaDraggable] = useState(false);
+  const theme = useTheme();
 
   const fetchItem = useCallback(async () => {
     try {
@@ -101,101 +112,120 @@ const Item = () => {
     setShowConfirmationModal(false);
   };
 
+  const MediaCard = ({ cardClass, media, height }) => {
+    return (
+      <Card className={cardClass}>
+        <CardActionArea
+          LinkComponent={Link}
+          to={getMediaLink(media)}
+          sx={{ cursor: mediaEditable ? "default" : "pointer" }}
+          disableRipple={mediaEditable}
+          draggable={mediaDraggable}
+        >
+          {mediaEditable && (
+            <>
+              <IconOnImage position="topLeft" showBackgroud>
+                <IoMove
+                  size={30}
+                  color={theme.palette.primary.main}
+                  onMouseDown={() => setMediaDraggable(true)}
+                  onMouseLeave={() => setMediaDraggable(false)}
+                />
+              </IconOnImage>
+              <IconOnImage position="topRight" showBackgroud>
+                <IoTrash
+                  size={30}
+                  color={theme.palette.error.main}
+                  onClick={deleteMediaHandler.bind(null, media)}
+                />
+              </IconOnImage>
+            </>
+          )}
+          <CardMedia
+            sx={{ height: height }}
+            image={IMAGE_BASE_URL + media.replaceAll("\\", "/")}
+            title={media.split("\\")[2]}
+          />
+        </CardActionArea>
+      </Card>
+    );
+  };
+
   return (
     <>
       {loadedItem && (
         <>
-          <div className={classes.infoArea}>
-            <h2>{loadedItem.name}</h2>
-            <p>{loadedItem.description}</p>
-            <p>
-              {"a piece of "}
-              <Link to={`/collection/${loadedItem.collectionId.id}`}>
-                {loadedItem.collectionId.name}
-              </Link>
-            </p>
+          <Stack color="text.primary" className={classes.infoArea}>
+            <Typography variant="h2" color="primary">
+              {loadedItem.name}
+            </Typography>
 
-            {loadedItem.collectionId.creator === loggedInUserId && (
-              <div className={classes.actionButtons}>
+            <Typography variant="subtitle1">
+              {loadedItem.description}
+            </Typography>
+
+            <br />
+
+            <Typography variant="caption" color="text.primary">
+              a piece from
+            </Typography>
+
+            <Typography
+              variant="p"
+              component={Link}
+              to={`/collection/${loadedItem.collectionId.id}`}
+              color="secondary"
+              sx={{ textDecoration: "none" }}
+            >
+              {loadedItem.collectionId.name}
+            </Typography>
+          </Stack>
+
+          {loadedItem.collectionId.creator === loggedInUserId && (
+            <Box className={classes.actionButtons}>
+              <Box>
                 <ImageUpload
                   buttonTitle="Add Photo"
                   onPicked={newMediaPickedHandler}
+                  color="primary"
+                  sx={{ width: "7rem" }}
                 />
+              </Box>
 
-                {loadedItem.mediaList.length > 1 && (
-                  <Button onClick={toggleEditMediaHandler} width="150px">
-                    {mediaEditable ? "Finish Edit" : "Edit Media"}
-                  </Button>
-                )}
-              </div>
-            )}
-          </div>
-
-          <Card className={classes.image} animate={!mediaEditable}>
-            <Link
-              to={getMediaLink(loadedItem.mediaList[0])}
-              style={mediaEditable ? { cursor: "default" } : null}
-            >
-              {mediaEditable && (
-                <>
-                  <IconOnImage position="topLeft" showBackgroud>
-                    <IoMove size={30} color="yellow" />
-                  </IconOnImage>
-                  <IconOnImage position="topRight" showBackgroud>
-                    <IoTrash
-                      size={30}
-                      color="red"
-                      onClick={deleteMediaHandler.bind(
-                        null,
-                        loadedItem.mediaList[0]
-                      )}
-                    />
-                  </IconOnImage>
-                </>
+              {loadedItem.mediaList.length > 1 && (
+                <Button
+                  onClick={toggleEditMediaHandler}
+                  sx={{ width: "7rem" }}
+                  color="secondary"
+                >
+                  {mediaEditable ? "Finish Edit" : "Edit Media"}
+                </Button>
               )}
-              <Image
-                src={loadedItem.mediaList[0]}
-                alt={loadedItem.mediaList[0].split("\\")[2]}
-              />
-            </Link>
-          </Card>
+            </Box>
+          )}
 
-          <div className={classes.mediaListContainer}>
+          <MediaCard
+            cardClass={classes.image}
+            height="70vh"
+            media={loadedItem.mediaList[0]}
+          />
+
+          <Box className={classes.mediaListContainer}>
             {loadedItem.mediaList.map((media) => {
               if (loadedItem.mediaList.indexOf(media) !== 0) {
                 return (
-                  <Card
+                  <MediaCard
                     key={media}
-                    className={classes.mediaCard}
-                    animate={!mediaEditable}
-                  >
-                    <Link
-                      to={getMediaLink(media)}
-                      style={mediaEditable ? { cursor: "default" } : null}
-                    >
-                      {mediaEditable && (
-                        <>
-                          <IconOnImage position="topLeft" showBackgroud>
-                            <IoMove size={30} color="yellow" />
-                          </IconOnImage>
-                          <IconOnImage position="topRight" showBackgroud>
-                            <IoTrash
-                              size={30}
-                              color="red"
-                              onClick={deleteMediaHandler.bind(null, media)}
-                            />
-                          </IconOnImage>
-                        </>
-                      )}
-                      <Image src={media} alt={media.split("\\")[2]} />
-                    </Link>
-                  </Card>
+                    cardClass={classes.mediaCard}
+                    height="20vh"
+                    media={media}
+                  />
                 );
               } else {
-                return <div key={media}></div>;
+                return null;
               }
             })}
-          </div>
+          </Box>
         </>
       )}
 
