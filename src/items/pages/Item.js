@@ -46,6 +46,7 @@ const Item = () => {
       if (responseData) fetchItemClearError();
       setLoadedItem(responseData);
     } catch (err) {
+      setLoadedItem(null);
       console.log(err);
     }
   }, [fetchItemSendRequest, itemId, fetchItemClearError, token]);

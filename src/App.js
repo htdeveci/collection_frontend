@@ -15,9 +15,20 @@ import { AppBar, Container, Toolbar } from "@mui/material";
 function App() {
   const { token } = useAuth();
 
-  let routes;
+  const routes = (
+    <Routes>
+      <Route path="/" element={<Navigate replace to="/home" />} />
+      <Route path="/home" element={<Home />} />
+      {!token && <Route path="/authenticate" element={<Authenticate />} />}
+      <Route path="/profile/:userId" element={<Profile />} />
+      <Route path="/collection/:collectionId" element={<Collection />} />
+      <Route path="/item/:itemId/media/:mediaName" element={<Media />} />
+      <Route path="/item/:itemId" element={<Item />} />
+      <Route path="*" element={<Navigate replace to="/home" />} />
+    </Routes>
+  );
 
-  if (token) {
+  /* if (token) {
     routes = (
       <Routes>
         <Route path="/" element={<Navigate replace to="/home" />} />
@@ -41,7 +52,7 @@ function App() {
         <Route path="/item/:itemId" element={<Item />} />
       </Routes>
     );
-  }
+  } */
 
   const theme = createTheme({
     palette: {

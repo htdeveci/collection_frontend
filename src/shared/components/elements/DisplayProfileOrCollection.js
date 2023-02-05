@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import classes from "./DisplayProfileOrCollection.module.css";
@@ -29,9 +29,24 @@ const DisplayProfileOrCollection = ({
   const { sendRequest: changePictureSendRequest } = useHttpClient();
   const { sendRequest: deleteElementSendRequest } = useHttpClient();
   const { sendRequest: addElementSendRequest } = useHttpClient();
+  const { sendRequest: getLoggedInUserSendRequest } = useHttpClient();
   const [showModal, setShowModal] = useState(false);
   const [selectedElement, setSelectedElement] = useState(false);
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState(null);
+
+  const fetchUser = useCallback(async () => {
+    const responseData = await getLoggedInUserSendRequest(
+      `/users/${loggedInUserId}`
+    );
+    setLoggedInUser(responseData);
+  }, [loggedInUserId, getLoggedInUserSendRequest]);
+
+  useEffect(() => {
+    if (loggedInUserId) {
+      fetchUser();
+    }
+  }, [loggedInUserId, fetchUser]);
 
   const picturePickedHandler = async (pickedFile) => {
     try {
@@ -62,7 +77,6 @@ const DisplayProfileOrCollection = ({
 
   const closeModalHandler = () => {
     setShowModal(false);
-    setSelectedElement(null);
   };
 
   const submitModalHandler = async (body) => {
@@ -79,12 +93,11 @@ const DisplayProfileOrCollection = ({
 
     try {
       await addElementSendRequest(url, method, body, true);
-      setShowModal(false);
-      setSelectedElement(null);
-      updateData();
     } catch (err) {
       console.log(err);
     }
+    setShowModal(false);
+    updateData();
   };
 
   const deleteElementHandler = (element) => {
@@ -119,6 +132,14 @@ const DisplayProfileOrCollection = ({
       return <ImageUpload Icon={IoPencil} onPicked={picturePickedHandler} />;
     }
     return null;
+  };
+
+  const selectedElementVisibilityChangeHandler = (value) => {
+    if (selectedElement) {
+      setSelectedElement((state) => {
+        return { ...state, visibility: value };
+      });
+    }
   };
 
   return (
@@ -218,9 +239,19 @@ const DisplayProfileOrCollection = ({
                         ? element.coverPicture
                         : element.mediaList[0]
                     }
+                    showEditActions={isUserAuthorized()}
                     editHandler={openModalHandler.bind(null, element)}
                     deleteHandler={deleteElementHandler.bind(null, element)}
-                    showActions={isUserAuthorized()}
+                    showFavoriteActions={!!loggedInUserId}
+                    favoriteStatus={
+                      loggedInUser &&
+                      (type === "profile"
+                        ? loggedInUser.favoriteCollectionList
+                        : loggedInUser.favoriteItemList
+                      ).includes(element.id)
+                    }
+                    favoriteCount={element.favoriteByUserList.length}
+                    isElementHidden={element.visibility === "self"}
                   />
                 );
               }
@@ -241,8 +272,9 @@ const DisplayProfileOrCollection = ({
             showModal={showModal}
             closeModalHandler={closeModalHandler}
             submitHandler={submitModalHandler}
-            initialElement={selectedElement}
-            collectionId={id}
+            selectedElement={selectedElement}
+            elementId={id}
+            onVisibilityChange={selectedElementVisibilityChangeHandler}
           />
         </>
       )}

@@ -4,9 +4,7 @@ import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import TextField from "@mui/material/TextField";
 import CardHeader from "@mui/material/CardHeader";
-import Typography from "@mui/material/Typography";
 
 import classes from "./Authenticate.module.css";
 import { useHttpClient } from "../../shared/hooks/http-hook";
@@ -18,11 +16,13 @@ import {
   VALIDATOR_REQUIRE,
 } from "../../shared/utils/validators";
 import Input from "../../shared/components/FormElements/Input";
-import { Box, FormControl } from "@mui/material";
+import { Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [isLoginMode, setIsLoginMode] = useState(true);
-  const { error, sendRequest, clearError } = useHttpClient();
+  const { sendRequest } = useHttpClient();
   const dispatch = useDispatch();
   const [formState, inputHandler, setFormData] = useForm(
     {
@@ -66,6 +66,7 @@ const Login = () => {
             expiration: null,
           })
         );
+        navigate(-1);
       } catch (err) {
         console.log(err);
       }
@@ -162,6 +163,56 @@ const Login = () => {
           <CardActions className={classes.cardContentAndAction}>
             <Button onClick={switchModeHandler} color="secondary" size="small">
               SWITCH TO {isLoginMode ? "REGISTER" : "LOGIN"}
+            </Button>
+
+            <Button
+              onClick={async () => {
+                let url = "/users/login";
+                let body = JSON.stringify({
+                  email: "htd@live.it",
+                  password: "Asaf1036",
+                });
+                try {
+                  const responseData = await sendRequest(url, "POST", body);
+                  dispatch(
+                    authAction.login({
+                      token: responseData.token,
+                      userId: responseData.userId,
+                      expiration: null,
+                    })
+                  );
+                  navigate(-1);
+                } catch (err) {
+                  console.log(err);
+                }
+              }}
+            >
+              htd@live.it
+            </Button>
+
+            <Button
+              onClick={async () => {
+                let url = "/users/login";
+                let body = JSON.stringify({
+                  email: "htd2@live.it",
+                  password: "Asaf1036",
+                });
+                try {
+                  const responseData = await sendRequest(url, "POST", body);
+                  dispatch(
+                    authAction.login({
+                      token: responseData.token,
+                      userId: responseData.userId,
+                      expiration: null,
+                    })
+                  );
+                  navigate(-1);
+                } catch (err) {
+                  console.log(err);
+                }
+              }}
+            >
+              htd2@live.it
             </Button>
           </CardActions>
         </Card>

@@ -1,128 +1,150 @@
-import { useState } from "react";
-import { IoShareSocial } from "react-icons/io5";
 import {
-  EmailIcon,
+  SpeedDial,
+  SpeedDialAction,
+  SpeedDialIcon,
+  useTheme,
+} from "@mui/material";
+import React, { useRef } from "react";
+import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
+import PinterestIcon from "@mui/icons-material/Pinterest";
+import ShareRoundedIcon from "@mui/icons-material/ShareRounded";
+import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import TelegramIcon from "@mui/icons-material/Telegram";
+import { FaFacebookMessenger } from "react-icons/fa";
+import {
   EmailShareButton,
-  FacebookIcon,
-  FacebookMessengerIcon,
   FacebookMessengerShareButton,
   FacebookShareButton,
-  PinterestIcon,
   PinterestShareButton,
-  TwitterIcon,
+  TelegramShareButton,
   TwitterShareButton,
-  WhatsappIcon,
   WhatsappShareButton,
 } from "react-share";
-import { CSSTransition } from "react-transition-group";
 
-import classes from "./ShareButtons.module.css";
-import ShareButtonWithIcon from "./ShareButtonWithIcon";
-
-const CopyLinkButton = ({ children, onMouseEnter, onMouseLeave }) => {
+const CopyLinkButton = React.forwardRef((props, ref) => {
   const copyLinkToClipboardHandler = () => {
     navigator.clipboard.writeText(window.location.href);
   };
 
   return (
     <button
-      url={window.location.href}
+      ref={ref}
+      url={props.url}
       onClick={copyLinkToClipboardHandler}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
       style={{
-        backgroundColor: "transparent",
-        border: "none",
-        cursor: "pointer",
+        display: "none",
       }}
-    >
-      {children}
-    </button>
+    ></button>
   );
-};
+});
 
-const CopyIcon = () => {
+const ShareButtons = () => {
+  const theme = useTheme();
+
+  const twitterRef = useRef();
+  const facebookRef = useRef();
+  const facebookMessangerRef = useRef();
+  const pinterestRef = useRef();
+  const whatsappRef = useRef();
+  const telegramRef = useRef();
+  const emailRef = useRef();
+  const copyLinkRef = useRef();
+
+  const shareComponents = [
+    {
+      name: "Twitter",
+      buttonRef: twitterRef,
+      icon: <TwitterIcon />,
+      color: "#00acee",
+    },
+    {
+      name: "Facebook",
+      buttonRef: facebookRef,
+      icon: <FacebookRoundedIcon />,
+      color: "#4267B2",
+    },
+    {
+      name: "Facebook Messenger",
+      buttonRef: facebookMessangerRef,
+      icon: <FaFacebookMessenger size={24} />,
+      color: "#006AFF",
+    },
+    {
+      name: "Pinterest",
+      buttonRef: pinterestRef,
+      icon: <PinterestIcon />,
+      color: "#E60023",
+    },
+    {
+      name: "WhatsApp",
+      buttonRef: whatsappRef,
+      icon: <WhatsAppIcon />,
+      color: "#25D366",
+    },
+    {
+      name: "Telegram",
+      buttonRef: telegramRef,
+      icon: <TelegramIcon />,
+      color: "#0088cc",
+    },
+    {
+      name: "E-mail",
+      buttonRef: emailRef,
+      icon: <EmailRoundedIcon />,
+      color: theme.palette.secondary.main,
+    },
+    {
+      name: "Copy Link",
+      buttonRef: copyLinkRef,
+      icon: <ContentCopyIcon />,
+      color: theme.palette.primary.main,
+    },
+  ];
+
   return (
     <>
-      <path
-        d="M408 480H184a72 72 0 01-72-72V184a72 72 0 0172-72h224a72 72 0 0172 72v224a72 72 0 01-72 72z"
-        fill="white"
+      <TwitterShareButton ref={twitterRef} url={window.location.href} />
+      <FacebookShareButton ref={facebookRef} url={window.location.href} />
+      <FacebookMessengerShareButton
+        ref={facebookMessangerRef}
+        url={window.location.href}
       />
-      <path
-        d="M160 80h235.88A72.12 72.12 0 00328 32H104a72 72 0 00-72 72v224a72.12 72.12 0 0048 67.88V160a80 80 0 0180-80z"
-        fill="white"
+      <PinterestShareButton
+        ref={pinterestRef}
+        url={window.location.href}
+        media="asaf"
       />
-    </>
-  );
-};
+      <WhatsappShareButton ref={whatsappRef} url={window.location.href} />
+      <TelegramShareButton ref={telegramRef} url={window.location.href} />
+      <EmailShareButton ref={emailRef} url={window.location.href} />
+      <CopyLinkButton ref={copyLinkRef} url={window.location.href} />
 
-const shareComponents = [
-  { name: "twitter", button: TwitterShareButton, icon: TwitterIcon },
-  { name: "facebook", button: FacebookShareButton, icon: FacebookIcon },
-  {
-    name: "facebookMessenger",
-    button: FacebookMessengerShareButton,
-    icon: FacebookMessengerIcon,
-  },
-  {
-    name: "pinterest",
-    button: PinterestShareButton,
-    icon: PinterestIcon,
-    media: "asaf",
-  },
-  {
-    name: "whatsapp",
-    button: WhatsappShareButton,
-    icon: WhatsappIcon,
-  },
-  {
-    name: "email",
-    button: EmailShareButton,
-    icon: EmailIcon,
-  },
-  {
-    name: "copyLink",
-    button: CopyLinkButton,
-    icon: CopyIcon,
-  },
-];
-
-const ShareButtons = ({ iconSize = 50, color = "green" }) => {
-  const [isHover, setIsHover] = useState(false);
-
-  return (
-    <>
-      <div
-        className={classes.buttonsContainer}
-        onMouseEnter={() => setIsHover(true)}
-        onMouseLeave={() => setIsHover(false)}
-        style={{ color: color }}
+      <SpeedDial
+        ariaLabel="Share Buttons SpeedDial"
+        sx={{ position: "fixed", bottom: 16, right: 16 }}
+        icon={
+          <SpeedDialIcon
+            openIcon={<CancelRoundedIcon />}
+            icon={<ShareRoundedIcon />}
+          />
+        }
       >
-        <IoShareSocial className={classes.icon} size={iconSize * 1.2} />
-
-        {shareComponents.map((component) => {
-          return (
-            <CSSTransition
-              key={component.name}
-              in={isHover}
-              mountOnEnter
-              unmountOnExit
-              timeout={500}
-              classNames={classes}
-            >
-              <ShareButtonWithIcon
-                ShareButton={component.button}
-                Icon={component.icon}
-                iconSize={iconSize}
-                media={
-                  component.name === "pinterest" ? component.media : undefined
-                }
-                custom={component.name === "copyLink"}
-              />
-            </CSSTransition>
-          );
-        })}
-      </div>
+        {shareComponents.map((shareComponent) => (
+          <SpeedDialAction
+            key={shareComponent.name}
+            icon={shareComponent.icon}
+            sx={{
+              "&:hover": { color: shareComponent.color },
+            }}
+            tooltipTitle={shareComponent.name}
+            onClick={() => shareComponent.buttonRef.current.click()}
+          />
+        ))}
+      </SpeedDial>
     </>
   );
 };

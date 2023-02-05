@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import classes from "./ElementModal.module.css";
 import ImageUpload from "../FormElements/ImageUpload";
@@ -19,19 +19,18 @@ import {
   useTheme,
 } from "@mui/material";
 
-const ElementModal = (props) => {
+const ElementModal = ({
+  type,
+  showModal,
+  closeModalHandler,
+  selectedElement,
+  submitHandler: submitHandlerProp,
+  elementId,
+  onVisibilityChange,
+}) => {
   const [pickedImage, setPickedImage] = useState(null);
   const [visibility, setVisibility] = useState("everyone");
   const theme = useTheme();
-
-  const {
-    type,
-    showModal,
-    closeModalHandler,
-    initialElement,
-    submitHandler: submitHandlerProp,
-    collectionId,
-  } = props;
 
   const [formState, inputHandler] = useForm(
     {
@@ -51,7 +50,9 @@ const ElementModal = (props) => {
     false
   );
 
-  const selectedElement = initialElement;
+  useEffect(() => {
+    if (showModal) setVisibility("everyone");
+  }, [showModal]);
 
   const submitHandler = (event) => {
     event.target.disabled = true;
@@ -77,32 +78,20 @@ const ElementModal = (props) => {
         body = new FormData();
         body.append("name", formState.inputs.name.value);
         body.append("description", formState.inputs.description.value);
-        body.append("collectionId", collectionId);
+        body.append("collectionId", elementId);
         body.append("visibility", visibility);
         body.append("image", pickedImage);
       } else {
         body = JSON.stringify({
           name: formState.inputs.name.value,
           description: formState.inputs.description.value,
-          collectionId: collectionId,
+          collectionId: elementId,
           visibility,
         });
       }
       submitHandlerProp(body);
     }
     event.target.disabled = false;
-    resetStates();
-  };
-
-  const resetStates = () => {
-    // setCollectionImage(null);
-    setPickedImage(null);
-    // setLoadedCollection(false);
-  };
-
-  const cancelHandler = () => {
-    closeModalHandler();
-    resetStates();
   };
 
   const getCapitalized = (value) => {
@@ -110,16 +99,17 @@ const ElementModal = (props) => {
   };
 
   const getHeader = () => {
-    if (initialElement) return `Edit ${getCapitalized(type)}`;
+    if (selectedElement) return `Edit ${getCapitalized(type)}`;
     else return `Add ${getCapitalized(type)}`;
   };
 
   const visibilityChangeHandler = (event) => {
+    onVisibilityChange(event.target.value);
     setVisibility(event.target.value);
   };
 
   return (
-    <Dialog open={showModal} onClose={cancelHandler}>
+    <Dialog open={showModal} onClose={closeModalHandler}>
       <DialogTitle bgcolor={theme.palette.primary.dark}>
         {getHeader()}
       </DialogTitle>
@@ -148,12 +138,11 @@ const ElementModal = (props) => {
 
           <FormControl>
             <InputLabel id="visibilitySelection">Visible to</InputLabel>
+
             <Select
               id="visibilitySelection"
               label="Visible to"
-              defaultValue={
-                selectedElement ? selectedElement.visibility : "everyone"
-              }
+              value={selectedElement ? selectedElement.visibility : visibility}
               onChange={visibilityChangeHandler}
             >
               <MenuItem value="self">Just Me</MenuItem>
@@ -183,7 +172,7 @@ const ElementModal = (props) => {
       </DialogContent>
 
       <DialogActions className={classes.dialogActions}>
-        <Button onClick={cancelHandler} color="error">
+        <Button onClick={closeModalHandler} color="error">
           Close
         </Button>
 
