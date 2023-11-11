@@ -11,12 +11,13 @@ const Collection = () => {
   // const loggedInUserId = useSelector((state) => state.auth.userId);
   const collectionId = useParams().collectionId;
   const [collection, setCollection] = useState(null);
-  const { error, sendRequest } = useHttpClient();
+  const { error, sendRequest, clearError } = useHttpClient();
 
   const fetchCollection = useCallback(async () => {
     try {
       const responseData = await sendRequest(`/collections/${collectionId}`);
       setCollection(responseData);
+      clearError();
     } catch (err) {
       setCollection(null);
       console.log(err);

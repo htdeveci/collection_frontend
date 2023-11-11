@@ -13,8 +13,12 @@ const Profile = () => {
     useHttpClient();
 
   const fetchUser = useCallback(async () => {
-    const responseData = await getUserSendRequest(`/users/${userId}`);
-    setUser(responseData);
+    try {
+      const responseData = await getUserSendRequest(`/users/${userId}`);
+      setUser(responseData);
+    } catch (err) {
+      console.log(err);
+    }
   }, [userId, getUserSendRequest]);
 
   useEffect(() => {

@@ -11,12 +11,14 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import NavBarButton from "./NavBarButton";
+import { APP_NAME } from "../../utils/global-constants";
 
 const NavBar = () => {
   const token = useSelector((state) => state.auth.token);
   const userId = useSelector((state) => state.auth.userId);
   const dispatch = useDispatch();
-  const theme = useTheme();
+  // const theme = useTheme();
 
   const logoutHandler = () => {
     dispatch(authAction.logout());
@@ -25,101 +27,22 @@ const NavBar = () => {
   return (
     <AppBar position="static" sx={{ marginBottom: 0 }} enableColorOnDark>
       <Toolbar className={classes.toolbar}>
-        <Typography
-          variant="h5"
-          noWrap
-          component={NavLink}
-          to="/"
-          sx={{
-            mr: 2,
-            display: { xs: "none", md: "flex" },
-            fontFamily: "monospace",
-            fontWeight: 700,
-            letterSpacing: ".3rem",
-            color: "inherit",
-            textDecoration: "none",
-            "&:hover": {
-              color: theme.palette.secondary.main,
-            },
-          }}
-        >
-          CASGLIAD
-        </Typography>
+        <NavBarButton variant="h5" to="/">
+          {APP_NAME.toUpperCase()}
+        </NavBarButton>
 
         <Box className={classes.menu}>
           {token && (
-            <Typography
-              variant="h6"
-              noWrap
-              component={NavLink}
-              to={`/profile/${userId}`}
-              sx={{
-                mr: 2,
-                display: { xs: "none", md: "flex" },
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
-                "&.active": {
-                  color: theme.palette.secondary.dark,
-                },
-                "&:hover": {
-                  color: theme.palette.secondary.main,
-                },
-              }}
-            >
-              Profile
-            </Typography>
+            <>
+              <NavBarButton to={`/profile/${userId}`}>Profile</NavBarButton>
+              <NavBarButton to={`/favorites`}>Favorites</NavBarButton>
+            </>
           )}
 
-          {token && (
-            <Typography
-              variant="h6"
-              noWrap
-              component={NavLink}
-              onClick={logoutHandler}
-              sx={{
-                mr: 2,
-                display: { xs: "none", md: "flex" },
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
-                "&:hover": {
-                  color: theme.palette.secondary.main,
-                },
-              }}
-            >
-              Logout
-            </Typography>
-          )}
+          {token && <NavBarButton onClick={logoutHandler}>Logout</NavBarButton>}
 
           {!token && (
-            <Typography
-              variant="h6"
-              noWrap
-              component={NavLink}
-              to="/authenticate"
-              sx={{
-                mr: 2,
-                display: { xs: "none", md: "flex" },
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
-                "&.active": {
-                  color: theme.palette.secondary.dark,
-                },
-                "&:hover": {
-                  color: theme.palette.secondary.main,
-                },
-              }}
-            >
-              Authenticate
-            </Typography>
+            <NavBarButton to="/authenticate">Authenticate</NavBarButton>
           )}
         </Box>
       </Toolbar>

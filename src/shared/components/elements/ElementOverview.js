@@ -13,6 +13,7 @@ import {
   CardMedia,
   IconButton,
   Stack,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -21,6 +22,7 @@ import { Favorite } from "@mui/icons-material";
 import { useState } from "react";
 import { useHttpClient } from "../../hooks/http-hook";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
+import SlideshowRoundedIcon from "@mui/icons-material/SlideshowRounded";
 
 const ElementOverview = ({
   type,
@@ -35,6 +37,7 @@ const ElementOverview = ({
   favoriteCount: favoriteCountProp = 0,
   favoriteStatus: favoriteStatusProp,
   isElementHidden = false,
+  onFavoriteStatusChange = null,
 }) => {
   const imageUrl = coverPicture.replaceAll("\\", "/");
   const navigate = useNavigate();
@@ -57,6 +60,7 @@ const ElementOverview = ({
         true
       );
       setFavoriteCount(responseData.favoriteCount);
+      if (onFavoriteStatusChange) onFavoriteStatusChange();
     } catch (err) {
       console.log(err);
     }
@@ -64,7 +68,7 @@ const ElementOverview = ({
 
   return (
     <>
-      <Card>
+      <Card sx={{ flex: "0 0 calc(33.3% - 1.333rem)" }}>
         <CardActionArea>
           <CardMedia
             sx={{ height: 200 }}
@@ -107,13 +111,58 @@ const ElementOverview = ({
 
             {showFavoriteActions && (
               <Stack direction="row" spacing={0} alignItems="center">
+                <Tooltip title="Start Slide Show">
+                  <IconButton color="secondary" size="small">
+                    <SlideshowRoundedIcon />
+                  </IconButton>
+                </Tooltip>
+
                 <Typography
                   color="text"
                   variant="caption"
-                  sx={{ paddingTop: 0.3 }}
+                  sx={{ paddingTop: 0.3, marginLeft: 1 }}
                 >
                   {favoriteCount}
                 </Typography>
+
+                <Tooltip title="Add to Favorites">
+                  <IconButton
+                    aria-label="add to favorites"
+                    onClick={toggleFavoriteHandler}
+                  >
+                    <Favorite
+                      fontSize="small"
+                      sx={{
+                        color: favoriteStatus
+                          ? theme.palette.error.main
+                          : "white",
+                      }}
+                    />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
+            )}
+          </CardActions>
+        )}
+
+        {!showEditActions && showFavoriteActions && (
+          <CardActions sx={{ justifyContent: "flex-end" }}>
+            <Stack direction="row" spacing={0} alignItems="center">
+              <Tooltip title="Start Slide Show">
+                <IconButton color="secondary" size="small">
+                  <SlideshowRoundedIcon />
+                </IconButton>
+              </Tooltip>
+
+              <Typography
+                color="text"
+                variant="caption"
+                sx={{ paddingTop: 0.3, marginLeft: 1 }}
+              >
+                {favoriteCount}
+              </Typography>
+
+              <Tooltip title="Add to Favorites">
                 <IconButton
                   aria-label="add to favorites"
                   onClick={toggleFavoriteHandler}
@@ -127,32 +176,7 @@ const ElementOverview = ({
                     }}
                   />
                 </IconButton>
-              </Stack>
-            )}
-          </CardActions>
-        )}
-
-        {!showEditActions && showFavoriteActions && (
-          <CardActions sx={{ justifyContent: "flex-end" }}>
-            <Stack direction="row" spacing={0} alignItems="center">
-              <Typography
-                color="text"
-                variant="caption"
-                sx={{ paddingTop: 0.3 }}
-              >
-                {favoriteCount}
-              </Typography>
-              <IconButton
-                aria-label="add to favorites"
-                onClick={toggleFavoriteHandler}
-              >
-                <Favorite
-                  fontSize="small"
-                  sx={{
-                    color: favoriteStatus ? theme.palette.error.main : "white",
-                  }}
-                />
-              </IconButton>
+              </Tooltip>
             </Stack>
           </CardActions>
         )}

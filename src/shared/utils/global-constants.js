@@ -1,3 +1,4 @@
+export const APP_NAME = "casgli";
 export const IMAGE_BASE_URL = "http://localhost:5000/";
 
 // 1 Hour as miliseconds

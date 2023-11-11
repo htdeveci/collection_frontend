@@ -11,11 +11,19 @@ import ElementModal from "./ElementModal";
 import { Link, NavLink } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import { IMAGE_BASE_URL } from "../../utils/global-constants";
-import { Badge, Button, Stack, Typography } from "@mui/material";
+import {
+  Badge,
+  Button,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/material";
 import { IoPencil } from "react-icons/io5";
 import { useTheme } from "@mui/system";
 import ConfirmationModal from "../UIElements/ConfirmationModal";
+import SlideshowRoundedIcon from "@mui/icons-material/SlideshowRounded";
 
 const DisplayProfileOrCollection = ({
   type,
@@ -147,7 +155,7 @@ const DisplayProfileOrCollection = ({
       {data && (
         <>
           <header className={classes.header}>
-            <Box flex={1} alignSelf="center" textAlign="center">
+            <Box flex={1} alignSelf="center" textAlign="left">
               <Badge
                 showZero={true}
                 badgeContent={getBadgeContent()}
@@ -185,7 +193,7 @@ const DisplayProfileOrCollection = ({
                 // justifyContent: "space-between",
               }}
             >
-              <Typography variant="h2" color="primary">
+              <Typography variant="h2" color="white">
                 {type === "profile" ? data.username : data.name}
               </Typography>
 
@@ -215,6 +223,16 @@ const DisplayProfileOrCollection = ({
                 </Stack>
               )}
             </Box>
+
+            {type === "collection" && (
+              <Box alignSelf="center">
+                <Tooltip title="Start Slide Show">
+                  <IconButton size="large" color="primary">
+                    <SlideshowRoundedIcon fontSize="large" />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            )}
           </header>
 
           <section className={classes.collectionOverviewSection}>
@@ -248,7 +266,7 @@ const DisplayProfileOrCollection = ({
                       (type === "profile"
                         ? loggedInUser.favoriteCollectionList
                         : loggedInUser.favoriteItemList
-                      ).includes(element.id)
+                      ).filter((e) => e.id === element.id).length > 0
                     }
                     favoriteCount={element.favoriteByUserList.length}
                     isElementHidden={element.visibility === "self"}

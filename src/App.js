@@ -11,6 +11,8 @@ import Authenticate from "./users/pages/Authenticate";
 import useAuth from "./shared/hooks/auth-hook";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { AppBar, Container, Toolbar } from "@mui/material";
+import Favorites from "./shared/pages/Favorites";
+import { useSelector } from "react-redux";
 
 function App() {
   const { token } = useAuth();
@@ -20,6 +22,7 @@ function App() {
       <Route path="/" element={<Navigate replace to="/home" />} />
       <Route path="/home" element={<Home />} />
       {!token && <Route path="/authenticate" element={<Authenticate />} />}
+      <Route path="/favorites" element={<Favorites />} />
       <Route path="/profile/:userId" element={<Profile />} />
       <Route path="/collection/:collectionId" element={<Collection />} />
       <Route path="/item/:itemId/media/:mediaName" element={<Media />} />
@@ -57,12 +60,10 @@ function App() {
   const theme = createTheme({
     palette: {
       mode: "dark",
-      primary: {
-        main: "#fd9801",
-      },
-      secondary: {
-        main: "#198391",
-      },
+      primary: { main: "#fd9801" },
+      secondary: { main: "#198391" },
+      success: { main: "#388e3c" },
+      error: { main: "#fc3628" },
     },
   });
 

@@ -2,6 +2,7 @@
   display: flex;
   /* height: 10rem; */
   margin-top: 2rem;
+  padding: 2rem;
 }
 
 .username {
@@ -12,12 +13,11 @@
 }
 
 .collectionOverviewSection {
-  padding: 2rem;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 2rem;
-  /* height: 15rem; */
+  padding: 2rem;
 }
 
 .badge span {
