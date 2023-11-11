@@ -1,7 +1,7 @@
-import { useTheme } from "@emotion/react";
-import { Box, Typography } from "@mui/material";
-import { Children, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useTheme } from "@emotion/react";
+import { Typography } from "@mui/material";
 
 const NavBarButton = ({ variant = "h6", onClick, to, children }) => {
   const theme = useTheme();
@@ -10,7 +10,7 @@ const NavBarButton = ({ variant = "h6", onClick, to, children }) => {
 
   useEffect(() => {
     setActive(location.pathname === to);
-  }, [location]);
+  }, [location, to]);
 
   return (
     <Typography

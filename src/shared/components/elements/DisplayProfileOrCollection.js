@@ -1,29 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { Badge, IconButton, Stack, Tooltip, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import { IoPencil } from "react-icons/io5";
+import Avatar from "@mui/material/Avatar";
+import SlideshowRoundedIcon from "@mui/icons-material/SlideshowRounded";
 
 import classes from "./DisplayProfileOrCollection.module.css";
 import ElementOverview from "./ElementOverview";
 import ImageUpload from "../FormElements/ImageUpload";
 import AddElementButton from "./AddElementButton";
-import Image from "../UIElements/Image";
 import { useHttpClient } from "../../hooks/http-hook";
 import ElementModal from "./ElementModal";
-import { Link, NavLink } from "react-router-dom";
-import Avatar from "@mui/material/Avatar";
-import { IMAGE_BASE_URL } from "../../utils/global-constants";
-import {
-  Badge,
-  Button,
-  IconButton,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import { Box } from "@mui/material";
-import { IoPencil } from "react-icons/io5";
-import { useTheme } from "@mui/system";
+import { NavLink } from "react-router-dom";
 import ConfirmationModal from "../UIElements/ConfirmationModal";
-import SlideshowRoundedIcon from "@mui/icons-material/SlideshowRounded";
 
 const DisplayProfileOrCollection = ({
   type,
@@ -168,7 +158,7 @@ const DisplayProfileOrCollection = ({
                 className={classes.badge}
               >
                 <Avatar
-                  src={IMAGE_BASE_URL.concat(
+                  src={process.env.REACT_APP_ASSET_URL.concat(
                     type === "profile"
                       ? data.profilePicture
                         ? data.profilePicture

@@ -3,7 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import classes from "./Item.module.css";
-import Image from "../../shared/components/UIElements/Image";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 import { IoTrash, IoMove } from "react-icons/io5";
@@ -20,11 +19,10 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { IMAGE_BASE_URL } from "../../shared/utils/global-constants";
 
 const Item = () => {
   const loggedInUserId = useSelector((state) => state.auth.userId);
-  const token = useSelector((state) => state.auth.token);
+  // const token = useSelector((state) => state.auth.token);
   const itemId = useParams().itemId;
   const {
     sendRequest: fetchItemSendRequest,
@@ -49,7 +47,7 @@ const Item = () => {
       setLoadedItem(null);
       console.log(err);
     }
-  }, [fetchItemSendRequest, itemId, fetchItemClearError, token]);
+  }, [fetchItemSendRequest, itemId, fetchItemClearError]);
 
   useEffect(() => {
     fetchItem();
@@ -144,7 +142,9 @@ const Item = () => {
           )}
           <CardMedia
             sx={{ height: height }}
-            image={IMAGE_BASE_URL + media.replaceAll("\\", "/")}
+            image={
+              process.env.REACT_APP_ASSET_URL + media.replaceAll("\\", "/")
+            }
             title={media.split("\\")[2]}
           />
         </CardActionArea>

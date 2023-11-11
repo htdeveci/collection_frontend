@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import DisplayProfileOrCollection from "../../shared/components/elements/DisplayProfileOrCollection";
 import ShareButtons from "../../shared/components/share/ShareButtons";
-import { useSelector } from "react-redux";
 
 const Collection = () => {
   // const loggedInUserId = useSelector((state) => state.auth.userId);
@@ -22,7 +21,7 @@ const Collection = () => {
       setCollection(null);
       console.log(err);
     }
-  }, [collectionId, sendRequest]);
+  }, [collectionId, sendRequest, clearError]);
 
   useEffect(() => {
     fetchCollection();

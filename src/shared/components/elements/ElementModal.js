@@ -1,10 +1,4 @@
 import { useEffect, useState } from "react";
-
-import classes from "./ElementModal.module.css";
-import ImageUpload from "../FormElements/ImageUpload";
-import Input from "../FormElements/Input";
-import { useForm } from "../../hooks/form-hook";
-import { VALIDATOR_REQUIRE } from "../../utils/validators";
 import {
   Box,
   Button,
@@ -18,6 +12,12 @@ import {
   Select,
   useTheme,
 } from "@mui/material";
+
+import classes from "./ElementModal.module.css";
+import ImageUpload from "../FormElements/ImageUpload";
+import Input from "../FormElements/Input";
+import { useForm } from "../../hooks/form-hook";
+import { VALIDATOR_REQUIRE } from "../../utils/validators";
 
 const ElementModal = ({
   type,

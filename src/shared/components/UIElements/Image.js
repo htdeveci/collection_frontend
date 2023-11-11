@@ -1,5 +1,4 @@
 import classes from "./Image.module.css";
-import { IMAGE_BASE_URL } from "../../utils/global-constants";
 
 const Image = (props) => {
   const style = {
@@ -16,7 +15,7 @@ const Image = (props) => {
     >
       <img
         className={classes.image}
-        src={IMAGE_BASE_URL + props.src}
+        src={process.env.REACT_APP_ASSET_URL + props.src}
         alt={props.alt}
         style={{ objectFit: props.objectFit }}
       />

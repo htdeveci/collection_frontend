@@ -1,6 +1,8 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Container } from "@mui/material";
 
-import classes from "./App.module.css";
+// import classes from "./App.module.css";
 import NavBar from "./shared/components/Navigation/NavBar";
 import Collection from "./collections/pages/Collection";
 import Home from "./shared/pages/Home";
@@ -9,10 +11,7 @@ import Media from "./items/pages/Media";
 import Profile from "./users/pages/Profile";
 import Authenticate from "./users/pages/Authenticate";
 import useAuth from "./shared/hooks/auth-hook";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { AppBar, Container, Toolbar } from "@mui/material";
 import Favorites from "./shared/pages/Favorites";
-import { useSelector } from "react-redux";
 
 function App() {
   const { token } = useAuth();

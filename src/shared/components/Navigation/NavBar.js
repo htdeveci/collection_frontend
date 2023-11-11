@@ -1,16 +1,8 @@
-import { NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { AppBar, Box, Toolbar } from "@mui/material";
 
 import classes from "./NavBar.module.css";
 import { authAction } from "../../store/auth";
-import {
-  AppBar,
-  Box,
-  Button,
-  Toolbar,
-  Typography,
-  useTheme,
-} from "@mui/material";
 import NavBarButton from "./NavBarButton";
 import { APP_NAME } from "../../utils/global-constants";
 
@@ -18,7 +10,6 @@ const NavBar = () => {
   const token = useSelector((state) => state.auth.token);
   const userId = useSelector((state) => state.auth.userId);
   const dispatch = useDispatch();
-  // const theme = useTheme();
 
   const logoutHandler = () => {
     dispatch(authAction.logout());

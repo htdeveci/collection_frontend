@@ -1,8 +1,6 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-import classes from "./ElementOverview.module.css";
-// import Card from "../UIElements/Card";
-import Image from "../UIElements/Image";
+// import classes from "./ElementOverview.module.css";
 import {
   Box,
   Button,
@@ -17,7 +15,6 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { IMAGE_BASE_URL } from "../../utils/global-constants";
 import { Favorite } from "@mui/icons-material";
 import { useState } from "react";
 import { useHttpClient } from "../../hooks/http-hook";
@@ -72,7 +69,7 @@ const ElementOverview = ({
         <CardActionArea>
           <CardMedia
             sx={{ height: 200 }}
-            image={IMAGE_BASE_URL + imageUrl}
+            image={process.env.REACT_APP_ASSET_URL + imageUrl}
             title={imageUrl.split("/")[2]}
             onClick={cardClickHandler}
           />

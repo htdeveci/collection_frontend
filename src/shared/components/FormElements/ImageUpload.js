@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { Button, useTheme } from "@mui/material";
 
 import classes from "./ImageUpload.module.css";
 import Image from "../UIElements/Image";
-import { Button, useTheme } from "@mui/material";
 
 const ImageUpload = ({
   id,

@@ -7,7 +7,6 @@ import {
 } from "react-icons/io5";
 
 import classes from "./Media.module.css";
-import { IMAGE_BASE_URL } from "../../shared/utils/global-constants";
 import IconOnImage from "../../shared/components/UIElements/IconOnImage";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import ShareButtons from "../../shared/components/share/ShareButtons";
@@ -125,7 +124,7 @@ const Media = () => {
             <>
               <img
                 className={classes.image}
-                src={IMAGE_BASE_URL + mediaName}
+                src={process.env.REACT_APP_ASSET_URL + mediaName}
                 alt={mediaName}
               />
 

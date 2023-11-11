@@ -1,8 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-const BACKEND_MAIN_URL = "http://localhost:5000/api";
-
 export const useHttpClient = () => {
   const [isLoading, setIsLoading] = useState();
   const [error, setError] = useState();
@@ -31,7 +29,7 @@ export const useHttpClient = () => {
       activeHttpRequests.current.push(httpAbortController);
 
       try {
-        const response = await fetch(BACKEND_MAIN_URL + url, {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL + url, {
           method,
           body,
           headers,

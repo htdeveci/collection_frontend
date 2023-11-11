@@ -1,9 +1,9 @@
-import { TabContext, TabPanel } from "@mui/lab";
-import { Box, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import SwipeableViews from "react-swipeable-views";
+
 import ElementOverview from "../components/elements/ElementOverview";
 import { useHttpClient } from "../hooks/http-hook";
 import classes from "./Favorites.module.css";
