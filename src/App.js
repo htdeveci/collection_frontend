@@ -1,17 +1,19 @@
+import React, { Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Container } from "@mui/material";
 
 // import classes from "./App.module.css";
 import NavBar from "./shared/components/Navigation/NavBar";
-import Collection from "./collections/pages/Collection";
-import Home from "./shared/pages/Home";
-import Item from "./items/pages/Item";
-import Media from "./items/pages/Media";
-import Profile from "./users/pages/Profile";
-import Authenticate from "./users/pages/Authenticate";
 import useAuth from "./shared/hooks/auth-hook";
-import Favorites from "./shared/pages/Favorites";
+
+const Home = React.lazy(() => import("./shared/pages/Home"));
+const Collection = React.lazy(() => import("./collections/pages/Collection"));
+const Item = React.lazy(() => import("./items/pages/Item"));
+const Media = React.lazy(() => import("./items/pages/Media"));
+const Profile = React.lazy(() => import("./users/pages/Profile"));
+const Authenticate = React.lazy(() => import("./users/pages/Authenticate"));
+const Favorites = React.lazy(() => import("./shared/pages/Favorites"));
 
 function App() {
   const { token } = useAuth();
@@ -76,7 +78,7 @@ function App() {
         }}
       >
         <NavBar />
-        {routes}
+        <Suspense fallback={<div>Loading</div>}>{routes}</Suspense>
       </Container>
       {/* <div
         className={classes.appMain}

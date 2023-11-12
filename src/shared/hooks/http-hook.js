@@ -29,7 +29,7 @@ export const useHttpClient = () => {
       activeHttpRequests.current.push(httpAbortController);
 
       try {
-        const response = await fetch(process.env.REACT_APP_BACKEND_URL + url, {
+        const response = await fetch(process.env.REACT_APP_API_URL + url, {
           method,
           body,
           headers,
