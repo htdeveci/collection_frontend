@@ -44,10 +44,28 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 80px; /* This is for construction text, must be deleted later */
 }
 
 .menu {
   display: flex;
   column-gap: 1rem;
   align-items: center;
+}
+
+.construction {
+  background-color: red;
+  width: 100%;
+  height: 80px;
+  position: absolute;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.construction text {
+  color: white;
+  text-align: center;
+  font-size: 20px;
 }

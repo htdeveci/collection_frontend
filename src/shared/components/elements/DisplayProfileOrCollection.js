@@ -49,6 +49,39 @@ const DisplayProfileOrCollection = ({
   const picturePickedHandler = async (pickedFile) => {
     try {
       const imageData = new FormData();
+      imageData.append("source", File[pickedFile]);
+      imageData.append("key", "6d207e02198a847aa98d0a2a901485a5");
+
+      /*  const body = JSON.stringify({
+        key: "6d207e02198a847aa98d0a2a901485a5",
+        source: File[pickedFile],
+      }); */
+
+      const headers = { "Content-Type": "multipart/form-data" };
+      const method = "POST";
+
+      const response = await fetch("https://freeimage.host/api/1/upload", {
+        method,
+        imageData,
+        // body,
+        headers,
+      });
+
+      const responseData = await response.json();
+
+      console.log(responseData);
+    } catch (err) {
+      console.log("errorr happens");
+    }
+  };
+
+  /* 
+  
+  ************This piece of code was the original one.**************
+
+  const picturePickedHandler = async (pickedFile) => {
+    try {
+      const imageData = new FormData();
       imageData.append("image", pickedFile);
       const responseData = await changePictureSendRequest(
         `/${
@@ -67,7 +100,7 @@ const DisplayProfileOrCollection = ({
       });
     } catch (err) {}
   };
-
+ */
   const openModalHandler = (element = null) => {
     setSelectedElement(element);
     setShowModal(true);
