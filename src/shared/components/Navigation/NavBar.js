@@ -18,14 +18,15 @@ const NavBar = () => {
   return (
     <>
       <div className={classes.construction}>
-        <text>
+        <p>
           This website is under construction and is currently running on free
           servers.
           <br />
           Due to these circumstances, you may not be able to use the website
           properly and images may not be displayed as intended.
-        </text>
+        </p>
       </div>
+
       <AppBar position="static" sx={{ marginBottom: 0 }} enableColorOnDark>
         <Toolbar className={classes.toolbar}>
           <NavBarButton variant="h5" to="/">

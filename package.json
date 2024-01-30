@@ -1,5 +1,6 @@
 {
   "name": "collection-client",
+  "homepage": "https://thecasgliad.com",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
