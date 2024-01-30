@@ -18,6 +18,7 @@ import ImageUpload from "../FormElements/ImageUpload";
 import Input from "../FormElements/Input";
 import { useForm } from "../../hooks/form-hook";
 import { VALIDATOR_REQUIRE } from "../../utils/validators";
+import { getImageSrcByRawPath } from "../../utils/image-path-converter";
 
 const ElementModal = ({
   type,
@@ -163,8 +164,8 @@ const ElementModal = ({
             initialValue={
               selectedElement
                 ? type === "collection"
-                  ? selectedElement.coverPicture
-                  : selectedElement.mediaList[0]
+                  ? getImageSrcByRawPath(selectedElement.coverPicture)
+                  : getImageSrcByRawPath(selectedElement.mediaList[0])
                 : null
             }
           />

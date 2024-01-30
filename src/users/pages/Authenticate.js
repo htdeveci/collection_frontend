@@ -164,56 +164,6 @@ const Login = () => {
             <Button onClick={switchModeHandler} color="secondary" size="small">
               SWITCH TO {isLoginMode ? "REGISTER" : "LOGIN"}
             </Button>
-
-            <Button
-              onClick={async () => {
-                let url = "/users/login";
-                let body = JSON.stringify({
-                  email: "htd@live.it",
-                  password: "Asaf1036",
-                });
-                try {
-                  const responseData = await sendRequest(url, "POST", body);
-                  dispatch(
-                    authAction.login({
-                      token: responseData.token,
-                      userId: responseData.userId,
-                      expiration: null,
-                    })
-                  );
-                  navigate(-1);
-                } catch (err) {
-                  console.log(err);
-                }
-              }}
-            >
-              htd@live.it
-            </Button>
-
-            <Button
-              onClick={async () => {
-                let url = "/users/login";
-                let body = JSON.stringify({
-                  email: "htd2@live.it",
-                  password: "Asaf1036",
-                });
-                try {
-                  const responseData = await sendRequest(url, "POST", body);
-                  dispatch(
-                    authAction.login({
-                      token: responseData.token,
-                      userId: responseData.userId,
-                      expiration: null,
-                    })
-                  );
-                  navigate(-1);
-                } catch (err) {
-                  console.log(err);
-                }
-              }}
-            >
-              htd2@live.it
-            </Button>
           </CardActions>
         </Card>
       </Box>

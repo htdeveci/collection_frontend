@@ -19,11 +19,13 @@ const NavBar = () => {
     <>
       <div className={classes.construction}>
         <p>
-          This website is under construction and is currently running on free
-          servers.
+          This website is currently under construction. You may not be able to
+          use the website properly.
           <br />
-          Due to these circumstances, you may not be able to use the website
-          properly and images may not be displayed as intended.
+          <b>
+            Therefore, existing databases will be deleted when published
+            properly.
+          </b>
         </p>
       </div>
 
@@ -52,49 +54,6 @@ const NavBar = () => {
         </Toolbar>
       </AppBar>
     </>
-    /*  <header className={classes.header}>
-      <nav>
-        <ul>
-          <li className={classes.homeLink}>
-            <NavLink
-              className={(navData) => (navData.isActive ? classes.active : "")}
-              to="/home"
-            >
-              Home
-            </NavLink>
-          </li>
-          {token && (
-            <li>
-              <NavLink
-                className={(navData) =>
-                  navData.isActive ? classes.active : ""
-                }
-                to={`/profile/${userId}`}
-              >
-                Profile
-              </NavLink>
-            </li>
-          )}
-          {token && (
-            <li>
-              <Button onClick={logoutHandler}>LOG OUT</Button>
-            </li>
-          )}
-          {!token && (
-            <li>
-              <NavLink
-                className={(navData) =>
-                  navData.isActive ? classes.active : ""
-                }
-                to="/authenticate"
-              >
-                Authenticate
-              </NavLink>
-            </li>
-          )}
-        </ul>
-      </nav>
-    </header> */
   );
 };
 

@@ -19,6 +19,10 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import {
+  getImageName,
+  getImageSrcByRawPath,
+} from "../../shared/utils/image-path-converter";
 
 const Item = () => {
   const loggedInUserId = useSelector((state) => state.auth.userId);
@@ -81,7 +85,7 @@ const Item = () => {
   const getMediaLink = (imageLink) => {
     return mediaEditable
       ? ""
-      : `/item/${itemId}/media/${imageLink.split("\\")[2]}`;
+      : `/item/${itemId}/media/${getImageName(imageLink)}`;
   };
 
   const deleteMediaHandler = async (media) => {
@@ -93,7 +97,7 @@ const Item = () => {
     event.preventDefault();
     try {
       await deleteMediaSendRequest(
-        `/items/${itemId}/media/${selectedMediaName.split("\\")[2]}`,
+        `/items/${itemId}/media/${getImageName(selectedMediaName)}`,
         "DELETE",
         null,
         true
@@ -142,10 +146,8 @@ const Item = () => {
           )}
           <CardMedia
             sx={{ height: height }}
-            image={
-              process.env.REACT_APP_ASSET_URL + media.replaceAll("\\", "/")
-            }
-            title={media.split("\\")[2]}
+            image={getImageSrcByRawPath(media)}
+            title={getImageName(media)}
           />
         </CardActionArea>
       </Card>

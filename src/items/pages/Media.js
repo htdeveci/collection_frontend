@@ -10,10 +10,11 @@ import classes from "./Media.module.css";
 import IconOnImage from "../../shared/components/UIElements/IconOnImage";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import ShareButtons from "../../shared/components/share/ShareButtons";
+import { getImageName } from "../../shared/utils/image-path-converter";
 
 const Media = () => {
   const navigate = useNavigate();
-  const mediaName = "uploads/images/" + useParams().mediaName;
+  const mediaName = process.env.REACT_APP_ASSET_FOLDER + useParams().mediaName;
   const itemId = useParams().itemId;
   const { sendRequest } = useHttpClient();
   const [item, setItem] = useState(null);
@@ -48,9 +49,9 @@ const Media = () => {
     const currentMediaIndex = getCurrentMediaIndex();
     if (item.mediaList.length > currentMediaIndex + 1) {
       navigate(
-        `/item/${itemId}/media/${
-          item.mediaList[currentMediaIndex + 1].split("\\")[2]
-        }`
+        `/item/${itemId}/media/${getImageName(
+          item.mediaList[currentMediaIndex + 1]
+        )}`
       );
     }
   };
@@ -59,16 +60,16 @@ const Media = () => {
     const currentMediaIndex = getCurrentMediaIndex();
     if (currentMediaIndex > 0) {
       navigate(
-        `/item/${itemId}/media/${
-          item.mediaList[currentMediaIndex - 1].split("\\")[2]
-        }`
+        `/item/${itemId}/media/${getImageName(
+          item.mediaList[currentMediaIndex - 1]
+        )}`
       );
     }
   };
 
   const getCurrentMediaIndex = () => {
     return item.mediaList.findIndex(
-      (media) => media.split("\\")[2] === mediaName.split("/")[2]
+      (media) => getImageName(media) === getImageName(mediaName)
     );
   };
 
@@ -122,11 +123,7 @@ const Media = () => {
 
           {item && (
             <>
-              <img
-                className={classes.image}
-                src={process.env.REACT_APP_ASSET_URL + mediaName}
-                alt={mediaName}
-              />
+              <img className={classes.image} src={mediaName} alt={mediaName} />
 
               <ShareButtons iconSize={40} />
             </>

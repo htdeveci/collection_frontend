@@ -20,6 +20,10 @@ import { useState } from "react";
 import { useHttpClient } from "../../hooks/http-hook";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import SlideshowRoundedIcon from "@mui/icons-material/SlideshowRounded";
+import {
+  getImageName,
+  getImageSrcByRawPath,
+} from "../../utils/image-path-converter";
 
 const ElementOverview = ({
   type,
@@ -36,7 +40,7 @@ const ElementOverview = ({
   isElementHidden = false,
   onFavoriteStatusChange = null,
 }) => {
-  const imageUrl = coverPicture.replaceAll("\\", "/");
+  // const imageUrl = coverPicture.replaceAll("\\", "/");
   const navigate = useNavigate();
   const [favoriteStatus, setFavoriteStatus] = useState(favoriteStatusProp);
   const [favoriteCount, setFavoriteCount] = useState(favoriteCountProp);
@@ -69,8 +73,8 @@ const ElementOverview = ({
         <CardActionArea>
           <CardMedia
             sx={{ height: 200 }}
-            image={process.env.REACT_APP_ASSET_URL + imageUrl}
-            title={imageUrl.split("/")[2]}
+            image={getImageSrcByRawPath(coverPicture)}
+            title={getImageName(coverPicture)}
             onClick={cardClickHandler}
           />
 
@@ -108,11 +112,11 @@ const ElementOverview = ({
 
             {showFavoriteActions && (
               <Stack direction="row" spacing={0} alignItems="center">
-                <Tooltip title="Start Slide Show">
+                {/* <Tooltip title="Start Slide Show">
                   <IconButton color="secondary" size="small">
                     <SlideshowRoundedIcon />
                   </IconButton>
-                </Tooltip>
+                </Tooltip> */}
 
                 <Typography
                   color="text"
@@ -145,11 +149,11 @@ const ElementOverview = ({
         {!showEditActions && showFavoriteActions && (
           <CardActions sx={{ justifyContent: "flex-end" }}>
             <Stack direction="row" spacing={0} alignItems="center">
-              <Tooltip title="Start Slide Show">
+              {/* <Tooltip title="Start Slide Show">
                 <IconButton color="secondary" size="small">
                   <SlideshowRoundedIcon />
                 </IconButton>
-              </Tooltip>
+              </Tooltip> */}
 
               <Typography
                 color="text"
